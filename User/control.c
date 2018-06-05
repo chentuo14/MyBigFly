@@ -31,6 +31,26 @@ vs16 PWM_YAW;							//偏航修正PWM补偿
 vs16 MOTO_PWM[4];						//保存输出控制四个电机的PWM值
 
 /**************************实现函数********************************************
+*函数原型:		void ClearStructMyControl(void)
+*功    能:		清空结构体内容
+*******************************************************************************/
+void ClearStructMyControl(void)
+{
+	u8 i;
+	myControl.pitch = 0.0;
+	myControl.roll = 0.0;
+	myControl.yaw = 0.0;
+	myControl.gyro_X = 0.0;
+	myControl.gyro_Y = 0.0;
+	myControl.gyro_Z = 0.0;
+	for(i=0;i<4;i++)
+		myControl.remoteControl[i]  = 0.0;			//1:左2000右999，2：上2000下999，3：油门，4：YAW左2000右999
+	for(i=0;i<2;i++)
+		myControl.remoteSwitch[i]  = 0.0;
+}
+
+
+/**************************实现函数********************************************
 *函数原型:		void Direction_Control(void)
 *功    能:		前后左右方向控制
 *******************************************************************************/

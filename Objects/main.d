@@ -67,3 +67,4 @@
 .\objects\main.o: .\Hardware\H\pca9685.h
 .\objects\main.o: .\Hardware\H\tim2.h
 .\objects\main.o: .\User\control.h
+.\objects\main.o: .\Hardware\H\tim4.h

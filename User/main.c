@@ -30,6 +30,7 @@
 #include "ms5611.h"
 #include "pca9685.h"
 #include "tim2.h"
+#include "tim4.h"
 #include "control.h"
 
 void Delay(uint16_t c);
@@ -59,7 +60,10 @@ int main(void)
 	
 	PCA9685_SetPWMFreq(50);				//初始化PCA9685
 	
-	TIM2_CAP_Init(0xffff, 72-1);		//1Mhz计数
+	ClearStructMyControl();
+	TIM2_CAP_Init(0xffff, 72-1);		//TIM2 1Mhz计数
+	TIM4_CAP_Init(0xffff, 72-1);		//TIM4 1Mhz计数
+
 	/* Infinite loop */
 	while (1)
 	{
@@ -78,11 +82,23 @@ int main(void)
 		printf("TIM2 CH1:%d\tTIM2 CH2:%d\tTIM2 CH3:%d\tTIM2 CH4:%d\n", 
 				myControl.remoteControl[0], myControl.remoteControl[1],
 				myControl.remoteControl[2], myControl.remoteControl[3]);
-		
-//		PCA9685_SetPWM(0, 0, myControl.remoteControl[2]/5);
-//		PCA9685_SetPWM(1, 0, myControl.remoteControl[2]/5);
-//		PCA9685_SetPWM(2, 0, myControl.remoteControl[2]/5);
-//		PCA9685_SetPWM(3, 0, myControl.remoteControl[2]/5);
+		if(myControl.remoteSwitch[0] > 1600) {
+			u8 i;
+			for(i=0;i<4;i++)
+				PCA9685_SetPWM(i, 0, 0);
+			while(1) {
+				delay_ms(500);
+			}
+		} else if(myControl.remoteSwitch[0] < 1400) {
+			while(1) {
+				PCA9685_SetPWM(0, 0, myControl.remoteControl[2]/5);
+				PCA9685_SetPWM(1, 0, myControl.remoteControl[2]/5);
+				PCA9685_SetPWM(2, 0, myControl.remoteControl[2]/5);
+				PCA9685_SetPWM(3, 0, myControl.remoteControl[2]/5);
+				delay_ms(200);
+			}
+
+		}
 	}
 }
 

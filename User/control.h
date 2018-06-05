@@ -13,6 +13,7 @@ struct MY_CONTROL {
 	vs16 gyro_Y;
 	vs16 gyro_Z;
 	u32 remoteControl[4];			//1:左2000右999，2：上2000下999，3：油门，4：YAW左2000右999
+	u32 remoteSwitch[2];
 };
 
 //油门最大值
@@ -24,6 +25,7 @@ struct MY_CONTROL {
 #define PITCH_I_MAX		300
 #define ROLL_I_MAX		300
 
+void ClearStructMyControl(void);
 void Direction_Control(void);
 void Outter_PID(void);
 void Inner_PID(void);
