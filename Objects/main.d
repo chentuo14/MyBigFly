@@ -65,5 +65,5 @@
 .\objects\main.o: .\eMPL\mllite\ml_math_func.h
 .\objects\main.o: .\Hardware\H\ms5611.h
 .\objects\main.o: .\Hardware\H\pca9685.h
-.\objects\main.o: .\Hardware\H\timer.h
+.\objects\main.o: .\Hardware\H\tim2.h
 .\objects\main.o: .\User\control.h

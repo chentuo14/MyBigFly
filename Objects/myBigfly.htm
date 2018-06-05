@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\myBigfly.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\myBigfly.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060422: Last Updated: Tue Jun 05 10:11:09 2018
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060422: Last Updated: Tue Jun 05 10:17:43 2018
 <BR><P>
 <H3>Maximum Stack Usage =        948 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -60,7 +60,7 @@ Function Pointers
  <LI><a href="#[25]">TIM1_CC_IRQHandler</a> from startup_stm32f10x_md.o(.text) referenced from startup_stm32f10x_md.o(RESET)
  <LI><a href="#[24]">TIM1_TRG_COM_IRQHandler</a> from startup_stm32f10x_md.o(.text) referenced from startup_stm32f10x_md.o(RESET)
  <LI><a href="#[23]">TIM1_UP_IRQHandler</a> from startup_stm32f10x_md.o(.text) referenced from startup_stm32f10x_md.o(RESET)
- <LI><a href="#[26]">TIM2_IRQHandler</a> from timer.o(i.TIM2_IRQHandler) referenced from startup_stm32f10x_md.o(RESET)
+ <LI><a href="#[26]">TIM2_IRQHandler</a> from tim2.o(i.TIM2_IRQHandler) referenced from startup_stm32f10x_md.o(RESET)
  <LI><a href="#[27]">TIM3_IRQHandler</a> from startup_stm32f10x_md.o(.text) referenced from startup_stm32f10x_md.o(RESET)
  <LI><a href="#[28]">TIM4_IRQHandler</a> from startup_stm32f10x_md.o(.text) referenced from startup_stm32f10x_md.o(RESET)
  <LI><a href="#[2f]">USART1_IRQHandler</a> from usart.o(i.USART1_IRQHandler) referenced from startup_stm32f10x_md.o(RESET)
@@ -2332,7 +2332,7 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f10x_md.o(.text)
 </UL>
-<P><STRONG><a name="[149]"></a>TIM2_CAP_Init</STRONG> (Thumb, 270 bytes, Stack size 48 bytes, timer.o(i.TIM2_CAP_Init))
+<P><STRONG><a name="[149]"></a>TIM2_CAP_Init</STRONG> (Thumb, 270 bytes, Stack size 48 bytes, tim2.o(i.TIM2_CAP_Init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 84<LI>Call Chain = TIM2_CAP_Init &rArr; TIM_ICInit &rArr; TI4_Config
 </UL>
 <BR>[Calls]<UL><LI><a href="#[124]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_Init
@@ -2348,7 +2348,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[35]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[26]"></a>TIM2_IRQHandler</STRONG> (Thumb, 774 bytes, Stack size 8 bytes, timer.o(i.TIM2_IRQHandler))
+<P><STRONG><a name="[26]"></a>TIM2_IRQHandler</STRONG> (Thumb, 774 bytes, Stack size 8 bytes, tim2.o(i.TIM2_IRQHandler))
 <BR><BR>[Stack]<UL><LI>Max Depth = 20<LI>Call Chain = TIM2_IRQHandler &rArr; TIM_GetITStatus
 </UL>
 <BR>[Calls]<UL><LI><a href="#[159]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;TIM_OC4PolarityConfig

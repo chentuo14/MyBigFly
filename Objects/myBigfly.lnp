@@ -19,7 +19,7 @@
 ".\objects\i2c.o"
 ".\objects\ms5611.o"
 ".\objects\pca9685.o"
-".\objects\timer.o"
+".\objects\tim2.o"
 ".\objects\inv_mpu.o"
 ".\objects\inv_mpu_dmp_motion_driver.o"
 ".\objects\mpu_userapi.o"

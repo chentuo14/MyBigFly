@@ -1,5 +1,5 @@
 
-#include "timer.h"
+#include "tim2.h"
 #include "usart.h"
 
 //arr:自动重装值 psc:时钟预分频数

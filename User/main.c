@@ -29,7 +29,7 @@
 #include "mpu_userapi.h"
 #include "ms5611.h"
 #include "pca9685.h"
-#include "timer.h"
+#include "tim2.h"
 #include "control.h"
 
 void Delay(uint16_t c);
