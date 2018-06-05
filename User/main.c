@@ -82,23 +82,24 @@ int main(void)
 		printf("TIM2 CH1:%d\tTIM2 CH2:%d\tTIM2 CH3:%d\tTIM2 CH4:%d\n", 
 				myControl.remoteControl[0], myControl.remoteControl[1],
 				myControl.remoteControl[2], myControl.remoteControl[3]);
-		if(myControl.remoteSwitch[0] > 1600) {
-			u8 i;
-			for(i=0;i<4;i++)
-				PCA9685_SetPWM(i, 0, 0);
-			while(1) {
-				delay_ms(500);
-			}
-		} else if(myControl.remoteSwitch[0] < 1400) {
-			while(1) {
-				PCA9685_SetPWM(0, 0, myControl.remoteControl[2]/5);
-				PCA9685_SetPWM(1, 0, myControl.remoteControl[2]/5);
-				PCA9685_SetPWM(2, 0, myControl.remoteControl[2]/5);
-				PCA9685_SetPWM(3, 0, myControl.remoteControl[2]/5);
-				delay_ms(200);
-			}
-
-		}
+		
+		printf("TIM4 CH3:%d\t TIM4 CH4:%d\n", myControl.remoteSwitch[0], myControl.remoteSwitch[1]);
+//		if(myControl.remoteSwitch[0] > 1600) {
+//			u8 i;
+//			for(i=0;i<4;i++)
+//				PCA9685_SetPWM(i, 0, 0);
+//			while(1) {
+//				delay_ms(500);
+//			}
+//		} else if(myControl.remoteSwitch[0] < 1400) {
+//			while(1) {
+//				PCA9685_SetPWM(0, 0, myControl.remoteControl[2]/5);
+//				PCA9685_SetPWM(1, 0, myControl.remoteControl[2]/5);
+//				PCA9685_SetPWM(2, 0, myControl.remoteControl[2]/5);
+//				PCA9685_SetPWM(3, 0, myControl.remoteControl[2]/5);
+//				delay_ms(200);
+//			}
+//		}
 	}
 }
 
