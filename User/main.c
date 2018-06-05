@@ -54,7 +54,8 @@ int main(void)
 //	if(MS5611_Init())					//初始化5611
 //		printf("MS5611 Init failed\n");
 	
-//	user_main();	
+//	user_main();
+	delay_ms(100);
 	if(!mpu9250_initialize())			//初始化9250
 		printf("MPU 9250 Initialize failed.\n");
 	
@@ -90,6 +91,8 @@ int main(void)
 //				PCA9685_SetPWM(i, 0, 0);
 //			while(1) {
 //				delay_ms(500);
+//				if(myControl.remoteSwitch[0] <= 1600 && myControl.remoteSwitch[0] >=1400)
+//					break;
 //			}
 //		} else if(myControl.remoteSwitch[0] < 1400) {
 //			while(1) {
@@ -98,6 +101,8 @@ int main(void)
 //				PCA9685_SetPWM(2, 0, myControl.remoteControl[2]/5);
 //				PCA9685_SetPWM(3, 0, myControl.remoteControl[2]/5);
 //				delay_ms(200);
+//				if(myControl.remoteSwitch[0] <= 1600 && myControl.remoteSwitch[0] >=1400)
+//					break;
 //			}
 //		}
 	}
