@@ -2,7 +2,7 @@
 .\objects\tim4.o: .\Hardware\H\tim4.h
 .\objects\tim4.o: .\StartUp\stm32f10x.h
 .\objects\tim4.o: .\StartUp\core_cm3.h
-.\objects\tim4.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\tim4.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\tim4.o: .\StartUp\system_stm32f10x.h
 .\objects\tim4.o: .\User\stm32f10x_conf.h
 .\objects\tim4.o: .\Lib\inc\stm32f10x_adc.h
@@ -30,5 +30,5 @@
 .\objects\tim4.o: .\Lib\inc\stm32f10x_wwdg.h
 .\objects\tim4.o: .\Lib\inc\misc.h
 .\objects\tim4.o: .\Hardware\H\usart.h
-.\objects\tim4.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\tim4.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\tim4.o: .\User\control.h

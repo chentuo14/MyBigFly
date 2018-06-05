@@ -2,7 +2,7 @@
 .\objects\led.o: .\Hardware\H\led.h
 .\objects\led.o: .\StartUp\stm32f10x.h
 .\objects\led.o: .\StartUp\core_cm3.h
-.\objects\led.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\led.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\led.o: .\StartUp\system_stm32f10x.h
 .\objects\led.o: .\User\stm32f10x_conf.h
 .\objects\led.o: .\Lib\inc\stm32f10x_adc.h

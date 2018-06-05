@@ -64,18 +64,18 @@ void TIM4_IRQHandler(void)
 		if(TIM_GetITStatus(TIM4, TIM_IT_CC3) != RESET) {		//捕获3发生捕获事件
 			if(CAPTURE_STA_TIM4CH[0]&0x40) {					//捕获到一个下降沿
 				CAPTURE_STA_TIM4CH[0] |= 0x80;					//标记成功捕获到一次高电平脉宽
-				CAPTURE_DOWN_TIM4CH[0] = TIM_GetCapture1(TIM4);
+				CAPTURE_DOWN_TIM4CH[0] = TIM_GetCapture3(TIM4);
 				if(CAPTURE_DOWN_TIM4CH[0] >= CAPTURE_UP_TIM4CH[0]) 
 					CAPTURE_VAL_TIM4CH[0] = CAPTURE_DOWN_TIM4CH[0] - CAPTURE_UP_TIM4CH[0];
 				else 
 					CAPTURE_VAL_TIM4CH[0] = 0xffff + CAPTURE_DOWN_TIM4CH[0] - CAPTURE_UP_TIM4CH[0];
-				TIM_OC1PolarityConfig(TIM4, TIM_ICPolarity_Rising);	//CC1P=0 设置为上升沿捕获
+				TIM_OC3PolarityConfig(TIM4, TIM_ICPolarity_Rising);	//CC1P=0 设置为上升沿捕获
 			} else {												//还未开始，第一次捕获上升沿
 				CAPTURE_STA_TIM4CH[0] = 0;							//清空
 				CAPTURE_VAL_TIM4CH[0] = 0;
-				CAPTURE_UP_TIM4CH[0] = TIM_GetCapture1(TIM4);
+				CAPTURE_UP_TIM4CH[0] = TIM_GetCapture3(TIM4);
 				CAPTURE_STA_TIM4CH[0] |= 0x40;						//标记捕获到了上升沿
-				TIM_OC1PolarityConfig(TIM4, TIM_ICPolarity_Falling);		//CC1P=1 设置为下降沿捕获
+				TIM_OC3PolarityConfig(TIM4, TIM_ICPolarity_Falling);		//CC1P=1 设置为下降沿捕获
 			}	
 			TIM_ClearFlag(TIM4, TIM_FLAG_CC3);								//清除状态标志
 		}
@@ -85,31 +85,31 @@ void TIM4_IRQHandler(void)
 		if(TIM_GetITStatus(TIM4, TIM_IT_CC4) != RESET) {			//捕获4发生捕获事件
 			if(CAPTURE_STA_TIM4CH[1]&0x40) {						//捕获到一个下降沿
 				CAPTURE_STA_TIM4CH[1] |= 0x80;						//标记成功捕获到一次高电平脉宽
-				CAPTURE_DOWN_TIM4CH[1] = TIM_GetCapture2(TIM4);		//获取捕获2计数
+				CAPTURE_DOWN_TIM4CH[1] = TIM_GetCapture4(TIM4);		//获取捕获2计数
 				if(CAPTURE_DOWN_TIM4CH[1] >= CAPTURE_UP_TIM4CH[1])
 					CAPTURE_VAL_TIM4CH[1] = CAPTURE_DOWN_TIM4CH[1] - CAPTURE_UP_TIM4CH[1];
 				else
 					CAPTURE_VAL_TIM4CH[1] = 0xffff + CAPTURE_DOWN_TIM4CH[1] - CAPTURE_UP_TIM4CH[1];
-				TIM_OC2PolarityConfig(TIM4, TIM_ICPolarity_Rising);	//CC1P=0 设置为上升沿捕获
+				TIM_OC4PolarityConfig(TIM4, TIM_ICPolarity_Rising);	//CC1P=0 设置为上升沿捕获
 			} else {												//还未开始，第一次捕获上升沿
 				CAPTURE_STA_TIM4CH[1] = 0;							//清空
 				CAPTURE_VAL_TIM4CH[1] = 0;
-				CAPTURE_UP_TIM4CH[1] = TIM_GetCapture2(TIM4);
+				CAPTURE_UP_TIM4CH[1] = TIM_GetCapture4(TIM4);
 				CAPTURE_STA_TIM4CH[1] |= 0x40;				//标记捕获到了上升沿
-				TIM_OC2PolarityConfig(TIM4, TIM_ICPolarity_Falling);	//CC1P=1 设置为下降沿捕获
+				TIM_OC4PolarityConfig(TIM4, TIM_ICPolarity_Falling);	//CC1P=1 设置为下降沿捕获
 			}
 			TIM_ClearFlag(TIM4, TIM_FLAG_CC4);								//清除状态标志	
 		}
 	}
 	
-		if(CAPTURE_STA_TIM4CH[0]&0x80) {								//成功捕获到了一次上升沿											//溢出时间总和
+	if(CAPTURE_STA_TIM4CH[0]&0x80) {								//成功捕获到了一次上升沿											//溢出时间总和
 		myControl.remoteSwitch[0] = CAPTURE_VAL_TIM4CH[0];							//得到总的高电平时间
-//		printf("TIM2 CH1:%d\t", temp[0]);
+//		printf("TIM4 CH3:%d\t", myControl.remoteSwitch[0]);
 		CAPTURE_STA_TIM4CH[0] = 0;
 	} 
 	if(CAPTURE_STA_TIM4CH[1]&0x80) {								//成功捕获到了一次上升沿											//溢出时间总和
 		myControl.remoteSwitch[1] = CAPTURE_VAL_TIM4CH[1];							//得到总的高电平时间
-//		printf("TIM2 CH2:%d\t", temp[1]);
+//		printf("TIM4 CH4:%d\t", temp[1]);
 		CAPTURE_STA_TIM4CH[1] = 0;
 	} 
 

@@ -2,7 +2,7 @@
 .\objects\control.o: User\control.h
 .\objects\control.o: .\StartUp\stm32f10x.h
 .\objects\control.o: .\StartUp\core_cm3.h
-.\objects\control.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\control.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\control.o: .\StartUp\system_stm32f10x.h
 .\objects\control.o: .\User\stm32f10x_conf.h
 .\objects\control.o: .\Lib\inc\stm32f10x_adc.h
@@ -31,4 +31,4 @@
 .\objects\control.o: .\Lib\inc\misc.h
 .\objects\control.o: .\Hardware\H\pca9685.h
 .\objects\control.o: .\Hardware\H\usart.h
-.\objects\control.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\control.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
