@@ -2,7 +2,7 @@
 .\objects\pca9685.o: .\Hardware\H\pca9685.h
 .\objects\pca9685.o: .\StartUp\stm32f10x.h
 .\objects\pca9685.o: .\StartUp\core_cm3.h
-.\objects\pca9685.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\pca9685.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\pca9685.o: .\StartUp\system_stm32f10x.h
 .\objects\pca9685.o: .\User\stm32f10x_conf.h
 .\objects\pca9685.o: .\Lib\inc\stm32f10x_adc.h
@@ -31,7 +31,7 @@
 .\objects\pca9685.o: .\Lib\inc\misc.h
 .\objects\pca9685.o: .\Hardware\H\i2c.h
 .\objects\pca9685.o: .\User\sysclock.h
-.\objects\pca9685.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
+.\objects\pca9685.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
 .\objects\pca9685.o: .\Hardware\H\usart.h
-.\objects\pca9685.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\pca9685.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\pca9685.o: .\User\control.h

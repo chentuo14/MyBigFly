@@ -2,7 +2,7 @@
 .\objects\sysclock.o: User\sysclock.h
 .\objects\sysclock.o: .\StartUp\stm32f10x.h
 .\objects\sysclock.o: .\StartUp\core_cm3.h
-.\objects\sysclock.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\sysclock.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\sysclock.o: .\StartUp\system_stm32f10x.h
 .\objects\sysclock.o: .\User\stm32f10x_conf.h
 .\objects\sysclock.o: .\Lib\inc\stm32f10x_adc.h

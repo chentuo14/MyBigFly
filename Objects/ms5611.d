@@ -2,7 +2,7 @@
 .\objects\ms5611.o: .\Hardware\H\ms5611.h
 .\objects\ms5611.o: .\StartUp\stm32f10x.h
 .\objects\ms5611.o: .\StartUp\core_cm3.h
-.\objects\ms5611.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\ms5611.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\ms5611.o: .\StartUp\system_stm32f10x.h
 .\objects\ms5611.o: .\User\stm32f10x_conf.h
 .\objects\ms5611.o: .\Lib\inc\stm32f10x_adc.h
@@ -32,4 +32,4 @@
 .\objects\ms5611.o: .\Hardware\H\i2c.h
 .\objects\ms5611.o: .\User\sysclock.h
 .\objects\ms5611.o: .\Hardware\H\usart.h
-.\objects\ms5611.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\ms5611.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h

@@ -1,7 +1,7 @@
 .\objects\main.o: User\main.c
 .\objects\main.o: .\StartUp\stm32f10x.h
 .\objects\main.o: .\StartUp\core_cm3.h
-.\objects\main.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\main.o: .\StartUp\system_stm32f10x.h
 .\objects\main.o: .\User\stm32f10x_conf.h
 .\objects\main.o: .\Lib\inc\stm32f10x_adc.h
@@ -28,7 +28,7 @@
 .\objects\main.o: .\Lib\inc\stm32f10x_usart.h
 .\objects\main.o: .\Lib\inc\stm32f10x_wwdg.h
 .\objects\main.o: .\Lib\inc\misc.h
-.\objects\main.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\main.o: .\Hardware\H\led.h
 .\objects\main.o: User\sysclock.h
 .\objects\main.o: .\Hardware\H\usart.h
@@ -39,12 +39,12 @@
 .\objects\main.o: .\eMPL\eMPL-hal\eMPL_outputs.h
 .\objects\main.o: .\eMPL\driver\include\mltypes.h
 .\objects\main.o: .\eMPL\driver\include\stdint_invensense.h
-.\objects\main.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
-.\objects\main.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\errno.h
-.\objects\main.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\limits.h
+.\objects\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\objects\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\errno.h
+.\objects\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\limits.h
 .\objects\main.o: .\eMPL\driver\include\log.h
-.\objects\main.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
-.\objects\main.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\objects\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
 .\objects\main.o: .\eMPL\driver\stm32L\packet.h
 .\objects\main.o: .\eMPL\mllite\hal_outputs.h
 .\objects\main.o: .\eMPL\mllite\message_layer.h
@@ -61,7 +61,7 @@
 .\objects\main.o: .\eMPL\mpl\no_gyro_fusion.h
 .\objects\main.o: .\eMPL\mpl\quaternion_supervisor.h
 .\objects\main.o: .\eMPL\mpl\inv_math.h
-.\objects\main.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
+.\objects\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
 .\objects\main.o: .\eMPL\mllite\ml_math_func.h
 .\objects\main.o: .\Hardware\H\ms5611.h
 .\objects\main.o: .\Hardware\H\pca9685.h

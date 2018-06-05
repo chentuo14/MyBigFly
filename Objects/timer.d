@@ -2,7 +2,7 @@
 .\objects\timer.o: .\Hardware\H\timer.h
 .\objects\timer.o: .\StartUp\stm32f10x.h
 .\objects\timer.o: .\StartUp\core_cm3.h
-.\objects\timer.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\timer.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\timer.o: .\StartUp\system_stm32f10x.h
 .\objects\timer.o: .\User\stm32f10x_conf.h
 .\objects\timer.o: .\Lib\inc\stm32f10x_adc.h
@@ -31,4 +31,4 @@
 .\objects\timer.o: .\Lib\inc\misc.h
 .\objects\timer.o: .\User\control.h
 .\objects\timer.o: .\Hardware\H\usart.h
-.\objects\timer.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\timer.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
