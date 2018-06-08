@@ -87,7 +87,7 @@ int main(void)
 				for(i=0;i<4;i++)
 					PCA9685_SetPWM(i, 0, 1000/MOTO_TO_PWM);
 				delay_ms(5);
-				if(myControl.remoteSwitch[0] >= 1400 && myControl.remoteSwitch[0] <= 2200)
+				if(myControl.remoteSwitch[0] >= 1600 && myControl.remoteSwitch[0] <= 2200)
 					break;
 			}
 		}else if(myControl.remoteSwitch[0] > 1600 && myControl.remoteSwitch[0] < 2200) {				//K2打高，启动
