@@ -33,6 +33,8 @@
 #include "tim4.h"
 #include "control.h"
 
+#define DEBUG_MAIN 0
+
 void attitude_control(void);
 void Delay(uint16_t c);
 extern struct MY_CONTROL myControl;
@@ -92,19 +94,22 @@ int main(void)
 			}
 		}else if(myControl.remoteSwitch[0] > 1600 && myControl.remoteSwitch[0] < 2200) {				//K2打高，启动
 			while(1) {
-//				PCA9685_SetPWM(0, 0, myControl.remoteControl[2]/5);
-//				PCA9685_SetPWM(1, 0, myControl.remoteControl[2]/5);
-//				PCA9685_SetPWM(2, 0, myControl.remoteControl[2]/5);
-//				PCA9685_SetPWM(3, 0, myControl.remoteControl[2]/5);
-				
+#if 0
+				PCA9685_SetPWM(0, 0, myControl.remoteControl[2]/5);
+				PCA9685_SetPWM(1, 0, myControl.remoteControl[2]/5);
+				PCA9685_SetPWM(2, 0, myControl.remoteControl[2]/5);
+				PCA9685_SetPWM(3, 0, myControl.remoteControl[2]/5);
+#endif			
 
 				attitude_control();
+#if DEBUG_MAIN
 				printf("pitch %f, roll %f, yaw %f, gyro_x %d gyro_y %d\n", myControl.pitch, myControl.roll, myControl.yaw,
 					myControl.gyro_X, myControl.gyro_Y);
 				printf("TIM2 CH1:%d\tTIM2 CH2:%d\tTIM2 CH3:%d\tTIM2 CH4:%d\n", 
 					myControl.remoteControl[0], myControl.remoteControl[1],
 					myControl.remoteControl[2], myControl.remoteControl[3]);	
 				printf("TIM4 CH3:%d\t TIM4 CH4:%d\n", myControl.remoteSwitch[0], myControl.remoteSwitch[1]);
+#endif
 				delay_ms(5);
 				if(myControl.remoteSwitch[0] <= 1600 && myControl.remoteSwitch[0] >=900)
 					break;
