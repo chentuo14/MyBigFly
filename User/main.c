@@ -87,7 +87,7 @@ int main(void)
 				for(i=0;i<4;i++)
 					PCA9685_SetPWM(i, 0, 1000/MOTO_TO_PWM);
 				delay_ms(5);
-				if(myControl.remoteSwitch[0] <= 1600 && myControl.remoteSwitch[0] >=900)
+				if(myControl.remoteSwitch[0] >= 1400 && myControl.remoteSwitch[0] <= 2200)
 					break;
 			}
 		}else if(myControl.remoteSwitch[0] > 1600 && myControl.remoteSwitch[0] < 2200) {				//K2打高，启动
@@ -98,18 +98,20 @@ int main(void)
 //				PCA9685_SetPWM(3, 0, myControl.remoteControl[2]/5);
 				
 
-			attitude_control();
-			printf("pitch %f, roll %f, yaw %f, gyro_x %d gyro_y %d\n", myControl.pitch, myControl.roll, myControl.yaw,
+				attitude_control();
+				printf("pitch %f, roll %f, yaw %f, gyro_x %d gyro_y %d\n", myControl.pitch, myControl.roll, myControl.yaw,
 					myControl.gyro_X, myControl.gyro_Y);
-			printf("TIM2 CH1:%d\tTIM2 CH2:%d\tTIM2 CH3:%d\tTIM2 CH4:%d\n", 
+				printf("TIM2 CH1:%d\tTIM2 CH2:%d\tTIM2 CH3:%d\tTIM2 CH4:%d\n", 
 					myControl.remoteControl[0], myControl.remoteControl[1],
 					myControl.remoteControl[2], myControl.remoteControl[3]);	
-			printf("TIM4 CH3:%d\t TIM4 CH4:%d\n", myControl.remoteSwitch[0], myControl.remoteSwitch[1]);
+				printf("TIM4 CH3:%d\t TIM4 CH4:%d\n", myControl.remoteSwitch[0], myControl.remoteSwitch[1]);
 				delay_ms(5);
 				if(myControl.remoteSwitch[0] <= 1600 && myControl.remoteSwitch[0] >=900)
 					break;
 			}
-		}  
+		}else {
+			delay_ms(5);
+		}			
 	}
 }
 

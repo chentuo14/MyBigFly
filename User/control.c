@@ -15,8 +15,8 @@ volatile float angular_speed_X = 0;		//内环x轴角速度给定值
 volatile float angular_speed_Y = 0;		//内环y轴角速度给定值
 
 //外环PID
-static float pit_p=0;								//绕X轴比例系数
-static float rol_p=0;								//绕Y轴比例系数
+static float pit_p=1;								//绕X轴比例系数
+static float rol_p=1;								//绕Y轴比例系数
 static float e_pit,e_rol;						    //X轴偏差和Y轴偏差
 
 //内环PID
@@ -56,6 +56,12 @@ void ClearStructMyControl(void)
 *******************************************************************************/
 void Direction_Control(void)
 {
+	if(myControl.remoteControl[0] > 1490 && myControl.remoteControl[0] < 1510)
+		myControl.remoteControl[0] = 1500;
+	if(myControl.remoteControl[1] > 1490 && myControl.remoteControl[1] < 1510)
+		myControl.remoteControl[1] = 1500;
+	if(myControl.remoteControl[3] > 1495 && myControl.remoteControl[3] < 1505)
+		myControl.remoteControl[3] = 1500;	
 	//根据遥控器传过来的前后方向值，改变ZHONGZHI_PIT的给定值
 	//按40度计算，500/40 = 12.5(pwm/度) 2度是25
 	ZHONGZHI_PIT = (myControl.remoteControl[1]-1500)/12.5;

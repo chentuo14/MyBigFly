@@ -502,6 +502,11 @@
               <FileType>1</FileType>
               <FilePath>.\Hardware\C\tim2.c</FilePath>
             </File>
+            <File>
+              <FileName>tim4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\C\tim4.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
