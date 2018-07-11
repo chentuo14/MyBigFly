@@ -1315,7 +1315,7 @@ int dmp_read_fifo(short *gyro, short *accel, long *quat,
             /* Quaternion is outside of the acceptable threshold. */
             mpu_reset_fifo();
             sensors[0] = 0;
-            return -1;
+            return -2;
         }
         sensors[0] |= INV_WXYZ_QUAT;
 #endif

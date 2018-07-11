@@ -1279,11 +1279,11 @@ int mpu9250_initialize(void)
 }
 
 /**************************函数说明********************************************
-*函数名称:		u8 mpu_mpl_get_data(float *pitch,float *roll,float *yaw, vs16 *gyro_x, vs16 *gyro_y)
+*函数名称:		u8 mpu_mpl_get_data(float *pitch,float *roll,float *yaw, vs16 *gyro_X, vs16 *gyro_Y)
 *函数功能:	    获取pitch,roll,yaw
 *******************************************************************************/
 #define q16  65536.0f
-u8 mpu_mpl_get_data(float *pitch,float *roll,float *yaw, vs16 *gyro_x, vs16 *gyro_y)
+u8 mpu_mpl_get_data(float *pitch,float *roll, float *yaw, vs16 *gyro_x, vs16 *gyro_y)
 {
 	unsigned long sensor_timestamp,timestamp;
 	short gyro[3], accel_short[3],compass_short[3],sensors;
@@ -1291,9 +1291,11 @@ u8 mpu_mpl_get_data(float *pitch,float *roll,float *yaw, vs16 *gyro_x, vs16 *gyr
 	long compass[3],accel[3],quat[4],temperature;
     long data[9];
     int8_t accuracy;
+	int ret=0;
 
-    if(dmp_read_fifo(gyro, accel_short, quat, &sensor_timestamp, &sensors,&more))
-		return 1;         
+	ret = dmp_read_fifo(gyro, accel_short, quat, &sensor_timestamp, &sensors,&more);
+    if(ret)
+		return ret;         
 
     if(sensors&INV_XYZ_GYRO)
     {
@@ -1320,13 +1322,17 @@ u8 mpu_mpl_get_data(float *pitch,float *roll,float *yaw, vs16 *gyro_x, vs16 *gyr
     }
     inv_execute_on_data();
     inv_get_sensor_type_euler(data,&accuracy,&timestamp);
-
+#if PITCHROLLOFF_ON
+    *roll  = (data[0]/q16) - ROLL_OFF;
+    *pitch = -(data[1]/q16) - PITCH_OFF;
+    *yaw   = -data[2] / q16;
+#else
     *roll  = (data[0]/q16);
     *pitch = -(data[1]/q16);
     *yaw   = -data[2] / q16;
-	
-	*gyro_x = gyro[0]*GYRO_XISHU;
-	*gyro_y = gyro[1]*GYRO_XISHU;
+#endif
+	*gyro_x = gyro[1]*GYRO_XISHU;
+	*gyro_y = gyro[0]*GYRO_XISHU;
 	
     return 0;
 }

@@ -15,16 +15,16 @@ volatile float angular_speed_X = 0;		//内环x轴角速度给定值
 volatile float angular_speed_Y = 0;		//内环y轴角速度给定值
 
 //外环PID
-static float pit_p=1;								//绕X轴比例系数
-static float rol_p=1;								//绕Y轴比例系数
+static float pit_p=0;								//绕X轴比例系数
+static float rol_p=0;								//绕Y轴比例系数
 static float e_pit,e_rol;						    //X轴偏差和Y轴偏差
 
 //内环PID
 float e_I_Y,e_I_X;									//内环积分累计偏差值
-static float kp1=1,ki1=0,kd1=0;						//绕X轴PID系数
-static float kp2=0,ki2=0,kd2=0;						//绕Y轴PID系数,kp=25,ki=0.5,kd=22,此组参数性能较好
+static float kp1=0,ki1=0,kd1=0;						//绕X轴PID系数(pitch)
+static float kp2=-4.5,ki2=0,kd2=-8;						//绕Y轴PID系数(roll),kp=25,ki=0.5,kd=22,此组参数性能较好
 static float e_X[2],e_Y[2];							//本次偏差，前一次偏差
-static u8 flag_Y=0,flag_X=0;						//积分项参不参与运算的标志
+static float flag_Y=0.0,flag_X=0.0;						//积分项参不参与运算的标志
 
 vs16 PWM_X,PWM_Y;						//内环PID运算后输出的PWM值
 vs16 PWM_YAW;							//偏航修正PWM补偿
@@ -40,6 +40,7 @@ void ClearStructMyControl(void)
 	myControl.pitch = 0.0;
 	myControl.roll = 0.0;
 	myControl.yaw = 0.0;
+	
 	myControl.gyro_X = 0.0;
 	myControl.gyro_Y = 0.0;
 	myControl.gyro_Z = 0.0;
@@ -49,12 +50,11 @@ void ClearStructMyControl(void)
 		myControl.remoteSwitch[i]  = 0.0;
 }
 
-
 /**************************实现函数********************************************
 *函数原型:		void Direction_Control(void)
 *功    能:		前后左右方向控制
 *******************************************************************************/
-void Direction_Control(void)
+int Direction_Control(void)
 {
 	if(myControl.remoteControl[0] > 1490 && myControl.remoteControl[0] < 1510)
 		myControl.remoteControl[0] = 1500;
@@ -68,6 +68,18 @@ void Direction_Control(void)
 	
 	//根据遥控器传过来的左右方向值，改变ZHONGZHI_ROL的给定值
 	ZHONGZHI_ROL = (myControl.remoteControl[0]-1500)/12.5;
+	
+	if((myControl.pitch >= 55) || (myControl.pitch <= -55)) {							//超过度数，关闭油门
+		Motor_Set(MOTOR_MIDVALUE, MOTOR_MIDVALUE, MOTOR_MIDVALUE, MOTOR_MIDVALUE);
+		return -1;
+	}
+	
+	if((myControl.roll >= 55) || (myControl.roll <= -55)) {								//超过度数，关闭油门
+		Motor_Set(MOTOR_MIDVALUE, MOTOR_MIDVALUE, MOTOR_MIDVALUE, MOTOR_MIDVALUE);
+		return -1;	
+	}
+	
+	return 0;
 }
 
 /**************************实现函数********************************************
@@ -92,17 +104,18 @@ void Outter_PID(void)
 void Inner_PID(void)
 {
 	//计算X轴和Y轴角速度偏差
-//	e_X[0] = angular_speed_X - myControl.gyro_X;
-//	e_Y[0] = angular_speed_Y - myControl.gyro_Y;
-	e_X[0] = myControl.pitch - myControl.gyro_X;
-	e_Y[0] = myControl.roll  - myControl.gyro_Y;
+	e_X[0] = angular_speed_X - myControl.gyro_X;
+	e_Y[0] = angular_speed_Y - myControl.gyro_Y;
+		
+//	e_X[0] = 0 - myControl.gyro_X;
+//	e_Y[0] = 0 - myControl.gyro_Y;
 	
 	//===========================绕X轴内环PID运算============================================
 	//积分分离，以便在偏差较大的时候可以快速的缩减偏差，在偏差较小的时候，才加入积分，消除误差
 	if(e_X[0]>=150.0||e_X[0]<=-150.0){
-		flag_X = 0;
+		flag_X = 0.0;
 	}else{
-		flag_X = 1;
+		flag_X = 1.0;
 		e_I_X += e_X[0];
 	}
 	
@@ -113,14 +126,14 @@ void Inner_PID(void)
 		e_I_X=-PITCH_I_MAX;              					
 	
 	//位置式PID运算
-	PWM_X = kp1*e_X[0]+flag_X*ki1*e_I_X+kd1*(e_X[0]-e_X[1]);
-//printf("PWM_X%d\n", PWM_X);
+	PWM_X = (s16)(kp1*e_X[0]+flag_X*ki1*e_I_X+kd1*(e_X[0]-e_X[1]));
+//printf("PWM_X%d, \n", PWM_X);
 	//===========================绕Y轴内环PID运算========================================
 	//积分分离，以便在偏差较大的时候可以快速的缩减偏差，在偏差较小的时候，才加入积分，消除误差
 	if(e_Y[0]>=150.0||e_Y[0]<=-150.0){
-		flag_Y = 0;
+		flag_Y = 0.0;
 	}else{
-		flag_Y = 1;
+		flag_Y = 1.0;
 		e_I_Y += e_Y[0];
 	}
 	
@@ -131,8 +144,8 @@ void Inner_PID(void)
 		e_I_Y=ROLL_I_MAX;
 	
 	//位置式PID运算
-	PWM_Y = kp2*e_Y[0]+flag_Y*ki2*e_I_Y+kd2*(e_Y[0]-e_Y[1]);
-
+	PWM_Y = (s16)(kp2*e_Y[0] + flag_Y*ki2*e_I_Y + kd2*(e_Y[0]-e_Y[1]));
+printf("PWM_Y:%d, e_Y[0]:%d\n", PWM_Y, e_Y[0]);
 	//=======================================================================================
 	//记录本次偏差
 	e_X[1] = e_X[0];								//用本次偏差值替换上次偏差值
@@ -187,20 +200,14 @@ void Deal_Pwm(void)
 void Set_Pwm(void)
 {
 	u8 i;
-PWM_Y = 0;
+PWM_X = 0;
 PWM_YAW = 0;
 	//装配给各电机的PWM值
 	MOTO_PWM[0] = myControl.remoteControl[2]+PWM_X+PWM_Y+PWM_YAW;
 	MOTO_PWM[1] = myControl.remoteControl[2]-PWM_X+PWM_Y-PWM_YAW;
 	MOTO_PWM[2] = myControl.remoteControl[2]-PWM_X-PWM_Y+PWM_YAW;
 	MOTO_PWM[3] = myControl.remoteControl[2]+PWM_X-PWM_Y-PWM_YAW;
-		
-//	printf("moto1:%d\r\n",moto_pwm[0]);
-//	printf("moto2:%d\r\n",moto_pwm[1]);
-//	printf("moto3:%d\r\n",moto_pwm[2]);
-//	printf("moto4:%d\r\n",moto_pwm[3]);
-//	printf("==============================\r\n");
-	
+			
 	//PWM限幅和防止出现负值
 	for(i=0;i<4;i++){
 		if(MOTO_PWM[i] >= MOTOR_MAXVALUE){
@@ -209,7 +216,7 @@ PWM_YAW = 0;
 			MOTO_PWM[i] = MOTOR_MIDVALUE;
 		}
 	}
-	
+	printf("PWM_X:%d, PWM_Y:%d, PWM_YAW:%d\r\n", PWM_X, PWM_Y, PWM_YAW);
 	printf("moto_pwm1:%d\r\n", MOTO_PWM[0]);
 	printf("moto_pwm2:%d\r\n", MOTO_PWM[1]);
 	printf("moto_pwm3:%d\r\n", MOTO_PWM[2]);

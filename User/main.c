@@ -32,24 +32,31 @@
 #include "tim2.h"
 #include "tim4.h"
 #include "control.h"
+#include "mpu_exti.h"
 
+#define CONTROL_ON 1
 #define DEBUG_MAIN 0
 
-void attitude_control(void);
+int attitude_control(void);
 void Delay(uint16_t c);
-extern struct MY_CONTROL myControl;
 
-void attitude_control(void)
+
+/**
+ *  @brief 		control the attitude
+ *  @return     0 if successful.
+ */
+int attitude_control(void)
 {
-	u8 i;
-	for(i=0;i<5;i++)
-		mpu_mpl_get_data(&myControl.pitch, &myControl.roll, &myControl.yaw, &myControl.gyro_X, &myControl.gyro_Y);
-	Direction_Control();
-	Outter_PID();
-	Inner_PID();
+	if(!Direction_Control()) {
+		Outter_PID();
+		Inner_PID();
 //		Rotation_Correction();
-	Deal_Pwm();
-	Set_Pwm();
+		Deal_Pwm();
+		Set_Pwm();
+		return 0;
+	}
+//	printf("do nothing\n");
+	return 0;
 }
 
 /**
@@ -64,59 +71,77 @@ int main(void)
 	SysTick_Config(SystemCoreClock / 1000);
 //	LED_Config();	
 	USART_Config();
-	UART1NVIC_Configuration();
+//	UART1NVIC_Configuration();
 	IIC_Init();
 //	if(MS5611_Init())					//初始化5611
 //		printf("MS5611 Init failed\n");
 	
 //	user_main();
+	PCA9685_SetPWMFreq(50);				//初始化PCA9685
 	delay_ms(100);
 	if(!mpu9250_initialize())			//初始化9250
 		printf("MPU 9250 Initialize failed.\n");
 	
-	PCA9685_SetPWMFreq(50);				//初始化PCA9685
 	
 	ClearStructMyControl();
 	TIM2_CAP_Init(0xffff, 72-1);		//TIM2 1Mhz计数
 	TIM4_CAP_Init(0xffff, 72-1);		//TIM4 1Mhz计数
-
+	DMP_EXTIConfig();
 	/* Infinite loop */
 	while (1)
-	{	
+	{			
 		if(myControl.remoteSwitch[0] < 1400 && myControl.remoteSwitch[0] > 900) {						//K2打低，关闭电机
-			u8 i;
 			while(1) {
-				for(i=0;i<4;i++)
-					PCA9685_SetPWM(i, 0, 1000/MOTO_TO_PWM);
-				delay_ms(5);
+				Motor_Set(MOTOR_MIDVALUE, MOTOR_MIDVALUE, MOTOR_MIDVALUE, MOTOR_MIDVALUE);
 				if(myControl.remoteSwitch[0] >= 1600 && myControl.remoteSwitch[0] <= 2200)
 					break;
+				delay_ms(10);
+
 			}
 		}else if(myControl.remoteSwitch[0] > 1600 && myControl.remoteSwitch[0] < 2200) {				//K2打高，启动
 			while(1) {
-#if 0
+#if CONTROL_ON
+				attitude_control();				
+#else			
 				PCA9685_SetPWM(0, 0, myControl.remoteControl[2]/5);
 				PCA9685_SetPWM(1, 0, myControl.remoteControl[2]/5);
 				PCA9685_SetPWM(2, 0, myControl.remoteControl[2]/5);
 				PCA9685_SetPWM(3, 0, myControl.remoteControl[2]/5);
-#endif			
-
-				attitude_control();
-#if DEBUG_MAIN
-				printf("pitch %f, roll %f, yaw %f, gyro_x %d gyro_y %d\n", myControl.pitch, myControl.roll, myControl.yaw,
-					myControl.gyro_X, myControl.gyro_Y);
-				printf("TIM2 CH1:%d\tTIM2 CH2:%d\tTIM2 CH3:%d\tTIM2 CH4:%d\n", 
-					myControl.remoteControl[0], myControl.remoteControl[1],
-					myControl.remoteControl[2], myControl.remoteControl[3]);	
-				printf("TIM4 CH3:%d\t TIM4 CH4:%d\n", myControl.remoteSwitch[0], myControl.remoteSwitch[1]);
 #endif
-				delay_ms(5);
+				
+				
+#if DEBUG_MAIN
+				printf("attitude:pitch %f, roll %f, yaw %f, gyro_x %d gyro_y %d\n", myControl.pitch, myControl.roll, myControl.yaw,
+					myControl.gyro_X, myControl.gyro_Y);
+//				printf("attitude:TIM2 CH1:%d\tTIM2 CH2:%d\tTIM2 CH3:%d\tTIM2 CH4:%d\n", 
+//					myControl.remoteControl[0], myControl.remoteControl[1],
+//					myControl.remoteControl[2], myControl.remoteControl[3]);	
+//				printf("attitude:TIM4 CH3:%d\t TIM4 CH4:%d\n", myControl.remoteSwitch[0], myControl.remoteSwitch[1]);
+#endif
 				if(myControl.remoteSwitch[0] <= 1600 && myControl.remoteSwitch[0] >=900)
 					break;
+				delay_ms(50);						//100ms delay
 			}
-		}else {
-			delay_ms(5);
+		}
+#if DEBUG_MAIN
+		else {
+			
+
+//			u8 i;
+//			for(i=0;i<5;i++)
+//				mpu_mpl_get_data(&myControl.pitch, &myControl.roll, &myControl.yaw, &myControl.gyro_X, &myControl.gyro_Y);
+
+			printf("noControl:pitch %f, roll %f, yaw %f, gyro_x %d gyro_y %d\n", myControl.pitch, myControl.roll, myControl.yaw,
+					myControl.gyro_X, myControl.gyro_Y);
+			printf("noControl:TIM2 CH1:%d\tTIM2 CH2:%d\tTIM2 CH3:%d\tTIM2 CH4:%d\n", 
+					myControl.remoteControl[0], myControl.remoteControl[1],
+					myControl.remoteControl[2], myControl.remoteControl[3]);	
+			printf("noControl:TIM4 CH3:%d\t TIM4 CH4:%d\n", myControl.remoteSwitch[0], myControl.remoteSwitch[1]);
+
+
+			delay_ms(10);
 		}			
+#endif
 	}
 }
 

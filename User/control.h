@@ -4,11 +4,16 @@
 #include "stm32f10x.h"
 
 #define GYRO_XISHU	(2000.0/65535.0)		//用来将GYRO原始值转换为实际角速度的比例系数
+#define PITCHROLLOFF_ON 1
+#define PITCH_OFF 9.30
+#define ROLL_OFF  9.60
 
 struct MY_CONTROL {
 	float pitch;
 	float roll;
 	float yaw;
+	float pitch_off;
+	float roll_off;
 	vs16 gyro_X;
 	vs16 gyro_Y;
 	vs16 gyro_Z;
@@ -26,11 +31,13 @@ struct MY_CONTROL {
 #define ROLL_I_MAX		300
 
 void ClearStructMyControl(void);
-void Direction_Control(void);
+int Direction_Control(void);
 void Outter_PID(void);
 void Inner_PID(void);
 void Rotation_Correction(void);
 void Deal_Pwm(void);
 void Set_Pwm(void);
+
+extern struct MY_CONTROL myControl;
 
 #endif
