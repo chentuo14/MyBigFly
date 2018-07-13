@@ -33,9 +33,8 @@
 #include "tim4.h"
 #include "control.h"
 #include "mpu_exti.h"
+#include "ANO_DataTransfer.h"
 
-#define CONTROL_ON 1
-#define DEBUG_MAIN 0
 
 int attitude_control(void);
 void Delay(uint16_t c);
@@ -79,8 +78,12 @@ int main(void)
 //	user_main();
 	PCA9685_SetPWMFreq(50);				//初始化PCA9685
 	delay_ms(100);
-	if(!mpu9250_initialize())			//初始化9250
+	if(!mpu9250_initialize()) {			//初始化9250
+#if DEBUG_PRINT
 		printf("MPU 9250 Initialize failed.\n");
+#endif
+		return 0;
+	}
 	
 	
 	ClearStructMyControl();
@@ -93,9 +96,16 @@ int main(void)
 		if(myControl.remoteSwitch[0] < 1400 && myControl.remoteSwitch[0] > 900) {						//K2打低，关闭电机
 			while(1) {
 				Motor_Set(MOTOR_MIDVALUE, MOTOR_MIDVALUE, MOTOR_MIDVALUE, MOTOR_MIDVALUE);
+				
+#if SEND_TO_ANO
+				ANO_DT_Send_Status(myControl.roll, myControl.pitch, myControl.yaw, 0, 0, 1);
+				ANO_DT_Send_Senser(mySenserData.a_x, mySenserData.a_y, mySenserData.a_z, mySenserData.g_x, mySenserData.g_y, mySenserData.g_z,
+					mySenserData.m_x, mySenserData.m_y, mySenserData.m_z);
+#endif
+				
 				if(myControl.remoteSwitch[0] >= 1600 && myControl.remoteSwitch[0] <= 2200)
 					break;
-				delay_ms(10);
+				delay_ms(50);
 
 			}
 		}else if(myControl.remoteSwitch[0] > 1600 && myControl.remoteSwitch[0] < 2200) {				//K2打高，启动
@@ -109,8 +119,8 @@ int main(void)
 				PCA9685_SetPWM(3, 0, myControl.remoteControl[2]/5);
 #endif
 				
-				
-#if DEBUG_MAIN
+//串口打印信息
+#if DEBUG_PRINT	
 				printf("attitude:pitch %f, roll %f, yaw %f, gyro_x %d gyro_y %d\n", myControl.pitch, myControl.roll, myControl.yaw,
 					myControl.gyro_X, myControl.gyro_Y);
 //				printf("attitude:TIM2 CH1:%d\tTIM2 CH2:%d\tTIM2 CH3:%d\tTIM2 CH4:%d\n", 
@@ -118,12 +128,19 @@ int main(void)
 //					myControl.remoteControl[2], myControl.remoteControl[3]);	
 //				printf("attitude:TIM4 CH3:%d\t TIM4 CH4:%d\n", myControl.remoteSwitch[0], myControl.remoteSwitch[1]);
 #endif
+
+//串口发送给上位机
+#if SEND_TO_ANO
+				ANO_DT_Send_Status(myControl.roll, myControl.pitch, myControl.yaw, 0, 0, 1);
+				ANO_DT_Send_Senser(mySenserData.a_x, mySenserData.a_y, mySenserData.a_z, mySenserData.g_x, mySenserData.g_y, mySenserData.g_z,
+					mySenserData.m_x, mySenserData.m_y, mySenserData.m_z);
+#endif 
 				if(myControl.remoteSwitch[0] <= 1600 && myControl.remoteSwitch[0] >=900)
 					break;
 				delay_ms(50);						//100ms delay
 			}
 		}
-#if DEBUG_MAIN
+#if DEBUG_PRINT
 		else {
 			
 

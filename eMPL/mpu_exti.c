@@ -38,9 +38,13 @@ void EXTI9_5_IRQHandler(void)
 //			Motor_Set(MOTOR_MIDVALUE, MOTOR_MIDVALUE, MOTOR_MIDVALUE, MOTOR_MIDVALUE);
 			;
 		} else if(ret == -1) {
+#if DEBUG_PRINT
 			printf("-1\n");
+#endif
 		} else {
+#if DEBUG_PRINT
 			printf("-2\n");
+#endif
 		}
 		EXTI_ClearITPendingBit(EXTI_Line5);
 	}

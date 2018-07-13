@@ -1292,7 +1292,8 @@ u8 mpu_mpl_get_data(float *pitch,float *roll, float *yaw, vs16 *gyro_x, vs16 *gy
     long data[9];
     int8_t accuracy;
 	int ret=0;
-
+	struct Sensor_Data _tempData;
+	
 	ret = dmp_read_fifo(gyro, accel_short, quat, &sensor_timestamp, &sensors,&more);
     if(ret)
 		return ret;         
@@ -1334,5 +1335,18 @@ u8 mpu_mpl_get_data(float *pitch,float *roll, float *yaw, vs16 *gyro_x, vs16 *gy
 	*gyro_x = gyro[1]*GYRO_XISHU;
 	*gyro_y = gyro[0]*GYRO_XISHU;
 	
+	_tempData.a_x = accel_short[0];
+	_tempData.a_y = accel_short[1];
+	_tempData.a_z = accel_short[2];
+	
+	_tempData.g_x = gyro[0];
+	_tempData.g_y = gyro[1];
+	_tempData.g_z = gyro[2];
+	
+	_tempData.m_x = compass[0];
+	_tempData.m_y = compass[1];
+	_tempData.m_z = compass[2];
+	
+	UpdateSensorData(&_tempData);
     return 0;
 }

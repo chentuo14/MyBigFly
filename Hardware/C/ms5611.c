@@ -115,7 +115,9 @@ int MS5611_Init(void)
 	
 	for(i=0;i<MS5611_PROM_REG_COUNT;i++) {
 		prom[i] = MS5611_Read_PROM(i);
+#if DEBUG_PRINT
 		printf("prom[%d] is %d\n", i, prom[i]);
+#endif
 	}
 	
 //	if(MS5611_CRC())			//好像没用，我也没搞懂怎么CRC
@@ -164,6 +166,7 @@ void PrintTempAndPress(void)
 {
 	float temp, press;
 	MS5611_GetValue(&temp, &press);
-	
+#if DEBUG_PRINT
 	printf("Temp = %f, Press = %f\n", temp/100, press/100); 
+#endif
 }

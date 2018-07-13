@@ -68,7 +68,9 @@ void TIM2_CAP_Init(u16 arr, u16 psc)
 	TIM_ITConfig(TIM2, TIM_IT_CC1|TIM_IT_CC2|TIM_IT_CC3|TIM_IT_CC4, ENABLE);			//更新中断和CC1IE捕获中断
 	
 	TIM_Cmd(TIM2, ENABLE);
+#if DEBUG_PRINT
 	printf("Init TIM2 CAP success\n");
+#endif
 }
 
 //捕获状态

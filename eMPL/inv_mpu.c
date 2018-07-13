@@ -784,7 +784,9 @@ int mpu_init(struct int_param_s *int_param)
     setup_compass();
     if (mpu_set_compass_sample_rate(10))
         return -9;
+#if DEBUG_PRINT
 	printf("compass init successfully!\n");
+#endif
 #else
     /* Already disabled by setup_compass. */
     if (mpu_set_bypass(0))
@@ -792,7 +794,9 @@ int mpu_init(struct int_param_s *int_param)
 #endif
 
     mpu_set_sensors(0);
+#if DEBUG_PRINT
 	printf("mpu init successfully!\n");
+#endif
     return 0;
 }
 
@@ -2940,8 +2944,11 @@ static int setup_compass(void)
     unsigned char data[4], akm_addr;
 	int ret;
     ret = mpu_set_bypass(1);
-	if(ret)
+	if(ret) {
+#if DEBUG_PRINT
 		printf("mpu_set_bypass ret is %d\n", ret);
+#endif
+	}
 
     /* Find compass. Possible addresses range from 0x0C to 0x0F. */
     for (akm_addr = 0x0C; akm_addr <= 0x0F; akm_addr++) {

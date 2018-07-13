@@ -95,7 +95,9 @@ void PCA9685_SetPWMFreq(u8 freq)
 	PCA9685_Write_Byte(PCA9685_MODE1, oldmode);
 	delay_ms(5);
 	PCA9685_Write_Byte(PCA9685_MODE1, oldmode | 0xa1); 
+#if DEBUG_PRINT
 	printf("Set PCA9685 Freq:%d\n", freq);
+#endif
 }
 
 /****************************************

@@ -21,6 +21,18 @@ struct MY_CONTROL {
 	u32 remoteSwitch[2];
 };
 
+struct Senser_Data {
+	s16 a_x;
+	s16 a_y;
+	s16 a_z;
+	s16 g_x;
+	s16 g_y;
+	s16 g_z;
+	s16 m_x;
+	s16 m_y;
+	s16 m_z;
+};
+
 //油门最大值
 #define MOTO_TO_PWM		5			//PWM转成PCA9685的系数
 #define MOTOR_MAXVALUE	2000		//电机最大PWM
@@ -31,6 +43,7 @@ struct MY_CONTROL {
 #define ROLL_I_MAX		300
 
 void ClearStructMyControl(void);
+void UpdateSensorData(struct Senser_Data *d);
 int Direction_Control(void);
 void Outter_PID(void);
 void Inner_PID(void);
@@ -39,5 +52,6 @@ void Deal_Pwm(void);
 void Set_Pwm(void);
 
 extern struct MY_CONTROL myControl;
+extern struct Senser_Data mySenserData;
 
 #endif

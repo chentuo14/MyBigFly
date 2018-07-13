@@ -52,7 +52,9 @@ void TIM4_CAP_Init(u16 arr, u16 psc)
 	TIM_ITConfig(TIM4, TIM_IT_CC3|TIM_IT_CC4, ENABLE);			//更新中断和CC1IE捕获中断
 	
 	TIM_Cmd(TIM4, ENABLE);
+#if DEBUG_PRINT
 	printf("Init TIM4 CAP success\n");
+#endif
 }
 
 u8 CAPTURE_STA_TIM4CH[2] = {0};

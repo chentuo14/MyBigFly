@@ -4,6 +4,7 @@
 #include "usart.h"
 
 struct MY_CONTROL myControl;
+struct Senser_Data mySenserData;
 /*********************************************************************************
 全局变量定义区
 ************************************************************************************/
@@ -48,6 +49,25 @@ void ClearStructMyControl(void)
 		myControl.remoteControl[i]  = 0.0;			//1:左2000右999，2：上2000下999，3：油门，4：YAW左2000右999
 	for(i=0;i<2;i++)
 		myControl.remoteSwitch[i]  = 0.0;
+}
+
+/**************************实现函数********************************************
+*函数原型:		void UpdateSensorData(struct Sensor_Data *d)
+*功    能:		更新数据到mySensorData
+*******************************************************************************/
+void UpdateSenserData(struct Senser_Data *d)
+{
+	mySenserData.a_x = d->a_x;
+	mySenserData.a_y = d->a_y;
+	mySenserData.a_z = d->a_z;
+	
+	mySenserData.g_x = d->g_x;
+	mySenserData.g_y = d->g_y;
+	mySenserData.g_z = d->g_z;
+	
+	mySenserData.m_x = d->m_x;
+	mySenserData.m_y = d->m_y;
+	mySenserData.m_z = d->m_z;
 }
 
 /**************************实现函数********************************************
@@ -145,7 +165,9 @@ void Inner_PID(void)
 	
 	//位置式PID运算
 	PWM_Y = (s16)(kp2*e_Y[0] + flag_Y*ki2*e_I_Y + kd2*(e_Y[0]-e_Y[1]));
-printf("PWM_Y:%d, e_Y[0]:%d\n", PWM_Y, e_Y[0]);
+#if DEBUG_PRINT
+	printf("PWM_Y:%d, e_Y[0]:%d\n", PWM_Y, e_Y[0]);
+#endif
 	//=======================================================================================
 	//记录本次偏差
 	e_X[1] = e_X[0];								//用本次偏差值替换上次偏差值
@@ -216,12 +238,14 @@ PWM_YAW = 0;
 			MOTO_PWM[i] = MOTOR_MIDVALUE;
 		}
 	}
+#if DEBUG_PRINT
 	printf("PWM_X:%d, PWM_Y:%d, PWM_YAW:%d\r\n", PWM_X, PWM_Y, PWM_YAW);
 	printf("moto_pwm1:%d\r\n", MOTO_PWM[0]);
 	printf("moto_pwm2:%d\r\n", MOTO_PWM[1]);
 	printf("moto_pwm3:%d\r\n", MOTO_PWM[2]);
 	printf("moto_pwm4:%d\r\n", MOTO_PWM[3]);
 	printf("================================\r\n");
+#endif
 	Motor_Set(MOTO_PWM[0], MOTO_PWM[1], MOTO_PWM[2], MOTO_PWM[3]);
 }
 
