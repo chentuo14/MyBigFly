@@ -43,7 +43,7 @@ struct Senser_Data {
 #define ROLL_I_MAX		300
 
 void ClearStructMyControl(void);
-void UpdateSensorData(struct Senser_Data *d);
+void UpdateSenserData(struct Senser_Data *d);
 int Direction_Control(void);
 void Outter_PID(void);
 void Inner_PID(void);
