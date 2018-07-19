@@ -10,12 +10,12 @@ void DMP_EXTIConfig(void)
 	GPIO_InitTypeDef GPIO_InitStructure;
 	EXTI_InitTypeDef EXTI_InitStructure;
 	/* GPIOB Periph clock enable */
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
 	
 	/* Configure PB5 in input input push down mode */
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPD;
-	GPIO_Init(GPIOB, &GPIO_InitStructure);
+	GPIO_Init(GPIOA, &GPIO_InitStructure);
 	
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_AFIO, ENABLE);
 	EXTI_InitStructure.EXTI_Line = EXTI_Line5;
@@ -24,7 +24,7 @@ void DMP_EXTIConfig(void)
 	EXTI_InitStructure.EXTI_LineCmd = ENABLE;
 	EXTI_Init(&EXTI_InitStructure);
 	
-	GPIO_EXTILineConfig(GPIO_PortSourceGPIOB, GPIO_PinSource5);
+	GPIO_EXTILineConfig(GPIO_PortSourceGPIOA, GPIO_PinSource5);
  	NVIC_SetPriority(EXTI9_5_IRQn, NVIC_EncodePriority(NVIC_PriorityGroup_1, 1, 1)); 
 	NVIC_EnableIRQ(EXTI9_5_IRQn);	
 }

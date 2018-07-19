@@ -4,7 +4,7 @@
 #include "stm32f10x.h"
 
 #define GYRO_XISHU	(2000.0/65535.0)		//用来将GYRO原始值转换为实际角速度的比例系数
-#define PITCHROLLOFF_ON 1
+#define PITCHROLLOFF_ON 0					//增加PIT,ROLL的初始偏移量
 #define PITCH_OFF 9.30
 #define ROLL_OFF  9.60
 

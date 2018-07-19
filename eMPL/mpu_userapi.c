@@ -1,6 +1,7 @@
 
 #include "mpu_userapi.h"
 #include "control.h"
+#include "usart.h"
 
 /* Data read from MPL. */
 #define PRINT_ACCEL     (0x01)
@@ -1292,7 +1293,7 @@ u8 mpu_mpl_get_data(float *pitch,float *roll, float *yaw, vs16 *gyro_x, vs16 *gy
     long data[9];
     int8_t accuracy;
 	int ret=0;
-	struct Sensor_Data _tempData;
+	struct Senser_Data _tempData;
 	
 	ret = dmp_read_fifo(gyro, accel_short, quat, &sensor_timestamp, &sensors,&more);
     if(ret)
@@ -1347,6 +1348,6 @@ u8 mpu_mpl_get_data(float *pitch,float *roll, float *yaw, vs16 *gyro_x, vs16 *gy
 	_tempData.m_y = compass[1];
 	_tempData.m_z = compass[2];
 	
-	UpdateSensorData(&_tempData);
+	UpdateSenserData(&_tempData);
     return 0;
 }

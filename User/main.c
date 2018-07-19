@@ -91,6 +91,15 @@ int main(void)
 	TIM4_CAP_Init(0xffff, 72-1);		//TIM4 1Mhz计数
 	DMP_EXTIConfig();
 	/* Infinite loop */
+	while(1) {
+#if SEND_TO_ANO
+				ANO_DT_Send_Status(myControl.roll, myControl.pitch, myControl.yaw, 0, 0, 1);
+				ANO_DT_Send_Senser(mySenserData.a_x, mySenserData.a_y, mySenserData.a_z, mySenserData.g_x, mySenserData.g_y, mySenserData.g_z,
+					mySenserData.m_x, mySenserData.m_y, mySenserData.m_z);
+#endif
+		delay_ms(50);
+	}
+	
 	while (1)
 	{			
 		if(myControl.remoteSwitch[0] < 1400 && myControl.remoteSwitch[0] > 900) {						//K2打低，关闭电机
