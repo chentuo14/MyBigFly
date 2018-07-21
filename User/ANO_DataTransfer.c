@@ -258,3 +258,59 @@ void My_ANO_DT_Send_MotoPWM(u16 m_1,u16 m_2,u16 m_3,u16 m_4)
 {
 	ANO_DT_Send_MotoPWM(m_1 - 1000, m_2 - 1000, m_3 - 1000, m_4 - 1000, 0, 0, 0, 0);
 }
+
+/**************************实现函数********************************************
+*函数原型:		void ANO_DT_Send_PID(u8 group,float p1_p,float p1_i,float p1_d,float p2_p,float p2_i,float p2_d,float p3_p,float p3_i,float p3_d)
+*功    能:		发送电机PWM到上位机
+*输入参数：		无
+*输出参数：		无
+*******************************************************************************/
+void ANO_DT_Send_PID(u8 group,float p1_p,float p1_i,float p1_d,float p2_p,float p2_i,float p2_d,float p3_p,float p3_i,float p3_d)
+{
+	u8 _cnt = 0;
+	vs16 _temp;
+	
+	data_to_send[_cnt++] = 0xAA;
+	data_to_send[_cnt++] = 0xAA;
+	data_to_send[_cnt++] = 0x10+group-1;				//从16开始，0，1，2--16，17，18
+	data_to_send[_cnt++] = 0;
+	
+	_temp = p1_p*1000;
+	data_to_send[_cnt++] = BYTE1(_temp);
+	data_to_send[_cnt++] = BYTE0(_temp);
+	_temp = p1_i*1000;
+	data_to_send[_cnt++] = BYTE1(_temp);
+	data_to_send[_cnt++] = BYTE0(_temp);	
+	_temp = p1_d*1000;
+	data_to_send[_cnt++] = BYTE1(_temp);
+	data_to_send[_cnt++] = BYTE0(_temp);
+	
+	_temp = p2_p*1000;
+	data_to_send[_cnt++] = BYTE1(_temp);
+	data_to_send[_cnt++] = BYTE0(_temp);
+	_temp = p2_i*1000;
+	data_to_send[_cnt++] = BYTE1(_temp);
+	data_to_send[_cnt++] = BYTE0(_temp);
+	_temp = p2_d*1000;
+	data_to_send[_cnt++] = BYTE1(_temp);
+	data_to_send[_cnt++] = BYTE0(_temp);
+	
+	_temp = p3_p*1000;
+	data_to_send[_cnt++] = BYTE1(_temp);
+	data_to_send[_cnt++] = BYTE0(_temp);
+	_temp = p3_i*1000;
+	data_to_send[_cnt++] = BYTE1(_temp);
+	data_to_send[_cnt++] = BYTE0(_temp);
+	_temp = p3_d*1000;
+	data_to_send[_cnt++] = BYTE1(_temp);
+	data_to_send[_cnt++] = BYTE0(_temp);
+
+	data_to_send[3] = _cnt - 4;
+	
+	u8 sum = 0;
+	for(u8 i=0;i<_cnt;i++)
+		sum += data_to_send[i];
+	data_to_send[_cnt++] = sum;
+	
+	serial3_send_buff(data_to_send, _cnt);
+}

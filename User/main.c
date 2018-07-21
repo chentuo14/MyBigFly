@@ -87,6 +87,7 @@ int main(void)
 	}
 	
 	ClearStructMyControl();
+	SetDefaultPID();
 	TIM2_CAP_Init(0xffff, 72-1);		//TIM2 1Mhz计数
 	TIM4_CAP_Init(0xffff, 72-1);		//TIM4 1Mhz计数
 	DMP_EXTIConfig();

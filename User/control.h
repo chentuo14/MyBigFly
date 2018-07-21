@@ -23,15 +23,36 @@ struct MY_CONTROL {
 };
 
 struct Senser_Data {
-	s16 a_x;
+	s16 a_x;						//加速度
 	s16 a_y;
 	s16 a_z;
-	s16 g_x;
+	s16 g_x;						//角速度
 	s16 g_y;
 	s16 g_z;
-	s16 m_x;
+	s16 m_x;						//磁力计
 	s16 m_y;
 	s16 m_z;
+};
+
+struct PID_Value {
+	float pit_p;			//pitch外环
+	float pit_i;
+	float pit_d;
+	float rol_p;			//roll外环
+	float rol_i;
+	float rol_d;
+	float yaw_p;			//yaw外环
+	float yaw_i;
+	float yaw_d;
+	float x_p;				//X轴内环
+	float x_i;
+	float x_d;
+	float y_p;				//y轴内环
+	float y_i;
+	float y_d;
+	float z_p;				//z轴内环
+	float z_i;
+	float z_d;
 };
 
 //油门最大值
@@ -44,6 +65,7 @@ struct Senser_Data {
 #define ROLL_I_MAX		300
 
 void ClearStructMyControl(void);
+void SetDefaultPID(void);
 void UpdateSensorData(struct Senser_Data *d);
 int Direction_Control(void);
 void Outter_PID(void);
@@ -54,5 +76,6 @@ void Set_Pwm(void);
 
 extern struct MY_CONTROL myControl;
 extern struct Senser_Data mySenserData;
+extern struct PID_Value myPID;
 
 #endif
