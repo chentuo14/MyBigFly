@@ -86,19 +86,22 @@ int main(void)
 		return 0;
 	}
 	
-	
 	ClearStructMyControl();
 	TIM2_CAP_Init(0xffff, 72-1);		//TIM2 1Mhz计数
 	TIM4_CAP_Init(0xffff, 72-1);		//TIM4 1Mhz计数
 	DMP_EXTIConfig();
 	/* Infinite loop */
 	WIFI_UDP_INIT();
+
 	while(1) {
 
 #if SEND_TO_ANO
-				ANO_DT_Send_Status(myControl.roll, myControl.pitch, myControl.yaw, 0, 0, 1);
-				ANO_DT_Send_Senser(mySenserData.a_x, mySenserData.a_y, mySenserData.a_z, mySenserData.g_x, mySenserData.g_y, mySenserData.g_z,
-					mySenserData.m_x, mySenserData.m_y, mySenserData.m_z);
+		ANO_DT_Send_Status(myControl.roll, myControl.pitch, myControl.yaw, 0, 0, 1);
+		ANO_DT_Send_Senser(mySenserData.a_x, mySenserData.a_y, mySenserData.a_z, mySenserData.g_x, mySenserData.g_y, mySenserData.g_z,
+			mySenserData.m_x, mySenserData.m_y, mySenserData.m_z);
+		My_ANO_DT_Send_RCData(myControl.remoteControl[0], myControl.remoteControl[1],
+			myControl.remoteControl[2], myControl.remoteControl[3]);
+		My_ANO_DT_Send_MotoPWM(myControl.MOTO_PWM[0], myControl.MOTO_PWM[1], myControl.MOTO_PWM[2], myControl.MOTO_PWM[3]);
 #endif
 		delay_ms(50);
 	}
@@ -113,6 +116,9 @@ int main(void)
 				ANO_DT_Send_Status(myControl.roll, myControl.pitch, myControl.yaw, 0, 0, 1);
 				ANO_DT_Send_Senser(mySenserData.a_x, mySenserData.a_y, mySenserData.a_z, mySenserData.g_x, mySenserData.g_y, mySenserData.g_z,
 					mySenserData.m_x, mySenserData.m_y, mySenserData.m_z);
+				My_ANO_DT_Send_RCData(myControl.remoteControl[0], myControl.remoteControl[1],
+					myControl.remoteControl[2], myControl.remoteControl[3]);
+				My_ANO_DT_Send_MotoPWM(myControl.MOTO_PWM[0], myControl.MOTO_PWM[1], myControl.MOTO_PWM[2], myControl.MOTO_PWM[3]);
 #endif
 				
 				if(myControl.remoteSwitch[0] >= 1600 && myControl.remoteSwitch[0] <= 2200)
@@ -146,6 +152,9 @@ int main(void)
 				ANO_DT_Send_Status(myControl.roll, myControl.pitch, myControl.yaw, 0, 0, 1);
 				ANO_DT_Send_Senser(mySenserData.a_x, mySenserData.a_y, mySenserData.a_z, mySenserData.g_x, mySenserData.g_y, mySenserData.g_z,
 					mySenserData.m_x, mySenserData.m_y, mySenserData.m_z);
+				My_ANO_DT_Send_RCData(myControl.remoteControl[0], myControl.remoteControl[1],
+					myControl.remoteControl[2], myControl.remoteControl[3]);
+				My_ANO_DT_Send_MotoPWM(myControl.MOTO_PWM[0], myControl.MOTO_PWM[1], myControl.MOTO_PWM[2], myControl.MOTO_PWM[3]);
 #endif 
 				if(myControl.remoteSwitch[0] <= 1600 && myControl.remoteSwitch[0] >=900)
 					break;

@@ -19,6 +19,7 @@ struct MY_CONTROL {
 	vs16 gyro_Z;
 	u32 remoteControl[4];			//1:左2000右999，2：上2000下999，3：油门，4：YAW左2000右999
 	u32 remoteSwitch[2];
+	vs16 MOTO_PWM[4];						//保存输出控制四个电机的PWM值
 };
 
 struct Senser_Data {
