@@ -1,6 +1,5 @@
 #include "ANO_DataTransfer.h"
-
-
+#include "wifi.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //数据拆分宏定义，在发送大于1字节的数据类型时，比如int16、float等，需要把数据拆分成单独字节进行发送
@@ -49,7 +48,7 @@ void ANO_DT_Send_Status(float angle_rol, float angle_pit, float angle_yaw, s32 a
 		sum += data_to_send[i];
 	data_to_send[_cnt++]=sum;
 	
-	fPutString(data_to_send, _cnt);
+	serial3_send_buff(data_to_send, _cnt);
 }
 
 void ANO_DT_Send_Senser(s16 a_x,s16 a_y,s16 a_z,s16 g_x,s16 g_y,s16 g_z,s16 m_x,s16 m_y,s16 m_z)
@@ -99,5 +98,5 @@ void ANO_DT_Send_Senser(s16 a_x,s16 a_y,s16 a_z,s16 g_x,s16 g_y,s16 g_z,s16 m_x,
 		sum += data_to_send[i];
 	data_to_send[_cnt++] = sum;
 	
-	fPutString(data_to_send, _cnt);
+	serial3_send_buff(data_to_send, _cnt);
 }

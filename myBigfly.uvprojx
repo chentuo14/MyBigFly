@@ -517,6 +517,11 @@
               <FileType>1</FileType>
               <FilePath>.\Hardware\C\tim4.c</FilePath>
             </File>
+            <File>
+              <FileName>wifi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\C\wifi.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

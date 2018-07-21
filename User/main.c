@@ -34,7 +34,7 @@
 #include "control.h"
 #include "mpu_exti.h"
 #include "ANO_DataTransfer.h"
-
+#include "wifi.h"
 
 int attitude_control(void);
 void Delay(uint16_t c);
@@ -70,6 +70,7 @@ int main(void)
 	SysTick_Config(SystemCoreClock / 1000);
 //	LED_Config();	
 	USART_Config();
+	USART3_Config();
 //	UART1NVIC_Configuration();
 	IIC_Init();
 //	if(MS5611_Init())					//初始化5611
@@ -91,7 +92,9 @@ int main(void)
 	TIM4_CAP_Init(0xffff, 72-1);		//TIM4 1Mhz计数
 	DMP_EXTIConfig();
 	/* Infinite loop */
+	WIFI_UDP_INIT();
 	while(1) {
+
 #if SEND_TO_ANO
 				ANO_DT_Send_Status(myControl.roll, myControl.pitch, myControl.yaw, 0, 0, 1);
 				ANO_DT_Send_Senser(mySenserData.a_x, mySenserData.a_y, mySenserData.a_z, mySenserData.g_x, mySenserData.g_y, mySenserData.g_z,
