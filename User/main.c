@@ -34,29 +34,10 @@
 #include "control.h"
 #include "mpu_exti.h"
 #include "ANO_DataTransfer.h"
+#include "wifi.h"
 
-
-int attitude_control(void);
 void Delay(uint16_t c);
-
-
-/**
- *  @brief 		control the attitude
- *  @return     0 if successful.
- */
-int attitude_control(void)
-{
-	if(!Direction_Control()) {
-		Outter_PID();
-		Inner_PID();
-//		Rotation_Correction();
-		Deal_Pwm();
-		Set_Pwm();
-		return 0;
-	}
-//	printf("do nothing\n");
-	return 0;
-}
+void old_code(void);
 
 /**
   * @brief  Main program.
@@ -70,12 +51,11 @@ int main(void)
 	SysTick_Config(SystemCoreClock / 1000);
 //	LED_Config();	
 	USART_Config();
-//	UART1NVIC_Configuration();
+	DMA1_CHANNEL2_Config();
 	IIC_Init();
 //	if(MS5611_Init())					//初始化5611
 //		printf("MS5611 Init failed\n");
 	
-//	user_main();
 	PCA9685_SetPWMFreq(50);				//初始化PCA9685
 	delay_ms(100);
 	if(!mpu9250_initialize()) {			//初始化9250
@@ -85,24 +65,52 @@ int main(void)
 		return 0;
 	}
 	
-	
 	ClearStructMyControl();
+	SetDefaultPID();
 	TIM2_CAP_Init(0xffff, 72-1);		//TIM2 1Mhz计数
 	TIM4_CAP_Init(0xffff, 72-1);		//TIM4 1Mhz计数
-	DMP_EXTIConfig();
 	/* Infinite loop */
+	WIFI_UDP_INIT();
+	DMP_EXTIConfig();
+
+	while(1) {
+#if SEND_TO_ANO
+		My_ANO_DT_Send_STATUS_SENSER_RCDATA_MOTO(&myControl, &mySenserData);
+#endif
+		Delay(1);
+	}
+}
+
+/*******************************************************************************
+* Function Name : Delay
+* Description :  simple delay
+* Input : c
+* Output : None
+* Return : None
+*******************************************************************************/
+
+void Delay(uint16_t c)
+{
+	uint16_t a,b;
+	for(; c>0; c--)
+		for(a=100; a>0; a--)
+			for(b=100; b>0; b--);
+}
+
+
+/**
+  * @}
+  */
+void old_code(void)
+{
 	while (1)
 	{			
 		if(myControl.remoteSwitch[0] < 1400 && myControl.remoteSwitch[0] > 900) {						//K2打低，关闭电机
 			while(1) {
-				Motor_Set(MOTOR_MIDVALUE, MOTOR_MIDVALUE, MOTOR_MIDVALUE, MOTOR_MIDVALUE);
-				
+				Motor_Set(MOTOR_MIDVALUE, MOTOR_MIDVALUE, MOTOR_MIDVALUE, MOTOR_MIDVALUE);			
 #if SEND_TO_ANO
-				ANO_DT_Send_Status(myControl.roll, myControl.pitch, myControl.yaw, 0, 0, 1);
-				ANO_DT_Send_Senser(mySenserData.a_x, mySenserData.a_y, mySenserData.a_z, mySenserData.g_x, mySenserData.g_y, mySenserData.g_z,
-					mySenserData.m_x, mySenserData.m_y, mySenserData.m_z);
-#endif
-				
+				My_ANO_DT_Send_STATUS_SENSER_RCDATA_MOTO(&myControl, &mySenserData);
+#endif		
 				if(myControl.remoteSwitch[0] >= 1600 && myControl.remoteSwitch[0] <= 2200)
 					break;
 				delay_ms(50);
@@ -111,7 +119,7 @@ int main(void)
 		}else if(myControl.remoteSwitch[0] > 1600 && myControl.remoteSwitch[0] < 2200) {				//K2打高，启动
 			while(1) {
 #if CONTROL_ON
-				attitude_control();				
+				attitude_control();
 #else			
 				PCA9685_SetPWM(0, 0, myControl.remoteControl[2]/5);
 				PCA9685_SetPWM(1, 0, myControl.remoteControl[2]/5);
@@ -131,57 +139,25 @@ int main(void)
 
 //串口发送给上位机
 #if SEND_TO_ANO
-				ANO_DT_Send_Status(myControl.roll, myControl.pitch, myControl.yaw, 0, 0, 1);
-				ANO_DT_Send_Senser(mySenserData.a_x, mySenserData.a_y, mySenserData.a_z, mySenserData.g_x, mySenserData.g_y, mySenserData.g_z,
-					mySenserData.m_x, mySenserData.m_y, mySenserData.m_z);
+					My_ANO_DT_Send_STATUS_SENSER_RCDATA_MOTO(&myControl, &mySenserData);
 #endif 
 				if(myControl.remoteSwitch[0] <= 1600 && myControl.remoteSwitch[0] >=900)
 					break;
-				delay_ms(50);						//100ms delay
+				delay_ms(25);						//100ms delay
 			}
 		}
 #if DEBUG_PRINT
 		else {
-			
-
-//			u8 i;
-//			for(i=0;i<5;i++)
-//				mpu_mpl_get_data(&myControl.pitch, &myControl.roll, &myControl.yaw, &myControl.gyro_X, &myControl.gyro_Y);
-
 			printf("noControl:pitch %f, roll %f, yaw %f, gyro_x %d gyro_y %d\n", myControl.pitch, myControl.roll, myControl.yaw,
 					myControl.gyro_X, myControl.gyro_Y);
 			printf("noControl:TIM2 CH1:%d\tTIM2 CH2:%d\tTIM2 CH3:%d\tTIM2 CH4:%d\n", 
 					myControl.remoteControl[0], myControl.remoteControl[1],
 					myControl.remoteControl[2], myControl.remoteControl[3]);	
 			printf("noControl:TIM4 CH3:%d\t TIM4 CH4:%d\n", myControl.remoteSwitch[0], myControl.remoteSwitch[1]);
-
-
 			delay_ms(10);
 		}			
 #endif
-	}
+	}	
 }
-
-/*******************************************************************************
-* Function Name : Delay
-* Description :  simple delay
-* Input : c
-* Output : None
-* Return : None
-*******************************************************************************/
-
-void Delay(uint16_t c)
-{
-	uint16_t a,b;
-	for(; c>0; c--)
-		for(a=1000; a>0; a--)
-			for(b=1000; b>0; b--);
-}
-
-
-/**
-  * @}
-  */
-
 
 /******************* (C) COPYRIGHT 2011 STMicroelectronics *****END OF FILE****/

@@ -45,8 +45,8 @@ void TIM4_CAP_Init(u16 arr, u16 psc)
 	//中断分组初始化
 	NVIC_InitStruct.NVIC_IRQChannel = TIM4_IRQn;
 	NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE;
-	NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = 2;
-	NVIC_InitStruct.NVIC_IRQChannelSubPriority = 1;
+	NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = 0;
+	NVIC_InitStruct.NVIC_IRQChannelSubPriority = 3;
 	NVIC_Init(&NVIC_InitStruct);
 	
 	TIM_ITConfig(TIM4, TIM_IT_CC3|TIM_IT_CC4, ENABLE);			//更新中断和CC1IE捕获中断
@@ -105,12 +105,20 @@ void TIM4_IRQHandler(void)
 	}
 	
 	if(CAPTURE_STA_TIM4CH[0]&0x80) {								//成功捕获到了一次上升沿											//溢出时间总和
-		myControl.remoteSwitch[0] = CAPTURE_VAL_TIM4CH[0];							//得到总的高电平时间
+		if(CAPTURE_VAL_TIM4CH[0] < 3000 && CAPTURE_VAL_TIM4CH[0]!=0) {
+			myControl.remoteSwitch[0] = CAPTURE_VAL_TIM4CH[0];							//得到总的高电平时间
+			if(myControl.remoteSwitch[0] < 1400 && myControl.remoteSwitch[0] > 900) {	
+				myControl.unlocked = 0;				//加锁状态
+			} else if(myControl.remoteSwitch[0] > 1600 && myControl.remoteSwitch[0] < 2200) {
+				myControl.unlocked = 1;				//解锁状态
+			}
+		}
 //		printf("TIM4 CH3:%d\t", myControl.remoteSwitch[0]);
 		CAPTURE_STA_TIM4CH[0] = 0;
 	} 
 	if(CAPTURE_STA_TIM4CH[1]&0x80) {								//成功捕获到了一次上升沿											//溢出时间总和
-		myControl.remoteSwitch[1] = CAPTURE_VAL_TIM4CH[1];							//得到总的高电平时间
+		if(CAPTURE_VAL_TIM4CH[1] < 3000 && CAPTURE_VAL_TIM4CH[1]!=0)
+			myControl.remoteSwitch[1] = CAPTURE_VAL_TIM4CH[1];							//得到总的高电平时间
 //		printf("TIM4 CH4:%d\t", temp[1]);
 		CAPTURE_STA_TIM4CH[1] = 0;
 	} 

@@ -4,7 +4,7 @@
 #include "stm32f10x.h"
 #include <stdio.h>
 
-#define CONTROL_ON 1
+#define CONTROL_ON  1
 #define DEBUG_PRINT 0
 #define SEND_TO_ANO 1
 

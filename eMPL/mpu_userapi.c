@@ -1,6 +1,7 @@
 
 #include "mpu_userapi.h"
 #include "control.h"
+#include "usart.h"
 
 /* Data read from MPL. */
 #define PRINT_ACCEL     (0x01)
@@ -1332,8 +1333,8 @@ u8 mpu_mpl_get_data(float *pitch,float *roll, float *yaw, vs16 *gyro_x, vs16 *gy
     *pitch = -(data[1]/q16);
     *yaw   = -data[2] / q16;
 #endif
-	*gyro_x = gyro[1]*GYRO_XISHU;
-	*gyro_y = gyro[0]*GYRO_XISHU;
+	*gyro_x = gyro[1];
+	*gyro_y = gyro[0];
 	
 	_tempData.a_x = accel_short[0];
 	_tempData.a_y = accel_short[1];

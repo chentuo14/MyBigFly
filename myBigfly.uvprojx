@@ -448,6 +448,11 @@
               <FileType>1</FileType>
               <FilePath>.\User\control.c</FilePath>
             </File>
+            <File>
+              <FileName>ANO_DataTransfer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\User\ANO_DataTransfer.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -540,6 +545,11 @@
               <FileName>tim4.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Hardware\C\tim4.c</FilePath>
+            </File>
+            <File>
+              <FileName>wifi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\C\wifi.c</FilePath>
             </File>
           </Files>
         </Group>

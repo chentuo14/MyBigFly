@@ -61,8 +61,8 @@ void TIM2_CAP_Init(u16 arr, u16 psc)
 	//中断分组初始化
 	NVIC_InitStruct.NVIC_IRQChannel = TIM2_IRQn;
 	NVIC_InitStruct.NVIC_IRQChannelCmd = ENABLE;
-	NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = 2;
-	NVIC_InitStruct.NVIC_IRQChannelSubPriority = 0;
+	NVIC_InitStruct.NVIC_IRQChannelPreemptionPriority = 0;
+	NVIC_InitStruct.NVIC_IRQChannelSubPriority = 2;
 	NVIC_Init(&NVIC_InitStruct);	
 	
 	TIM_ITConfig(TIM2, TIM_IT_CC1|TIM_IT_CC2|TIM_IT_CC3|TIM_IT_CC4, ENABLE);			//更新中断和CC1IE捕获中断
@@ -102,8 +102,8 @@ void TIM2_IRQHandler(void)
 				CAPTURE_DOWN_TIM2CH[0] = TIM_GetCapture1(TIM2);
 				if(CAPTURE_DOWN_TIM2CH[0] >= CAPTURE_UP_TIM2CH[0]) 
 					CAPTURE_VAL_TIM2CH[0] = CAPTURE_DOWN_TIM2CH[0] - CAPTURE_UP_TIM2CH[0];
-				else 
-					CAPTURE_VAL_TIM2CH[0] = 0xffff + CAPTURE_DOWN_TIM2CH[0] - CAPTURE_UP_TIM2CH[0];
+//				else 
+//					CAPTURE_VAL_TIM2CH[0] = 0xffff + CAPTURE_DOWN_TIM2CH[0] - CAPTURE_UP_TIM2CH[0];
 				TIM_OC1PolarityConfig(TIM2, TIM_ICPolarity_Rising);	//CC1P=0 设置为上升沿捕获
 			} else {										//还未开始，第一次捕获上升沿
 				CAPTURE_STA_TIM2CH[0] = 0;					//清空
@@ -123,8 +123,8 @@ void TIM2_IRQHandler(void)
 				CAPTURE_DOWN_TIM2CH[1] = TIM_GetCapture2(TIM2);		//获取捕获2计数
 				if(CAPTURE_DOWN_TIM2CH[1] >= CAPTURE_UP_TIM2CH[1])
 					CAPTURE_VAL_TIM2CH[1] = CAPTURE_DOWN_TIM2CH[1] - CAPTURE_UP_TIM2CH[1];
-				else
-					CAPTURE_VAL_TIM2CH[1] = 0xffff + CAPTURE_DOWN_TIM2CH[1] - CAPTURE_UP_TIM2CH[1];
+//				else
+//					CAPTURE_VAL_TIM2CH[1] = 0xffff + CAPTURE_DOWN_TIM2CH[1] - CAPTURE_UP_TIM2CH[1];
 				TIM_OC2PolarityConfig(TIM2, TIM_ICPolarity_Rising);	//CC1P=0 设置为上升沿捕获
 			} else {												//还未开始，第一次捕获上升沿
 				CAPTURE_STA_TIM2CH[1] = 0;							//清空
@@ -144,8 +144,8 @@ void TIM2_IRQHandler(void)
 				CAPTURE_DOWN_TIM2CH[2] = TIM_GetCapture3(TIM2);		//获取捕获2计数
 				if(CAPTURE_DOWN_TIM2CH[2] >= CAPTURE_UP_TIM2CH[2])
 					CAPTURE_VAL_TIM2CH[2] = CAPTURE_DOWN_TIM2CH[2] - CAPTURE_UP_TIM2CH[2];
-				else
-					CAPTURE_VAL_TIM2CH[2] = 0xffff + CAPTURE_DOWN_TIM2CH[2] - CAPTURE_UP_TIM2CH[2];
+//				else
+//					CAPTURE_VAL_TIM2CH[2] = 0xffff + CAPTURE_DOWN_TIM2CH[2] - CAPTURE_UP_TIM2CH[2];
 				TIM_OC3PolarityConfig(TIM2, TIM_ICPolarity_Rising);	//CC1P=0 设置为上升沿捕获
 			} else {												//还未开始，第一次捕获上升沿
 				CAPTURE_STA_TIM2CH[2] = 0;							//清空
@@ -164,8 +164,8 @@ void TIM2_IRQHandler(void)
 				CAPTURE_DOWN_TIM2CH[3] = TIM_GetCapture4(TIM2);		//获取捕获2计数
 				if(CAPTURE_DOWN_TIM2CH[3] >= CAPTURE_UP_TIM2CH[3])
 					CAPTURE_VAL_TIM2CH[3] = CAPTURE_DOWN_TIM2CH[3] - CAPTURE_UP_TIM2CH[3];
-				else
-					CAPTURE_VAL_TIM2CH[3] = 0xffff + CAPTURE_DOWN_TIM2CH[3] - CAPTURE_UP_TIM2CH[3];
+//				else
+//					CAPTURE_VAL_TIM2CH[3] = 0xffff + CAPTURE_DOWN_TIM2CH[3] - CAPTURE_UP_TIM2CH[3];
 				TIM_OC4PolarityConfig(TIM2, TIM_ICPolarity_Rising);	//CC1P=0 设置为上升沿捕获
 			} else {												//还未开始，第一次捕获上升沿
 				CAPTURE_STA_TIM2CH[3] = 0;							//清空
@@ -180,22 +180,26 @@ void TIM2_IRQHandler(void)
 
 	//处理帧数据
 	if(CAPTURE_STA_TIM2CH[0]&0x80) {								//成功捕获到了一次上升沿											//溢出时间总和
-		myControl.remoteControl[0] = CAPTURE_VAL_TIM2CH[0];							//得到总的高电平时间
+		if(CAPTURE_VAL_TIM2CH[0] < 3000 && CAPTURE_VAL_TIM2CH[0]!=0)
+			myControl.remoteControl[0] = CAPTURE_VAL_TIM2CH[0];							//得到总的高电平时间
 //		printf("TIM2 CH1:%d\t", temp[0]);
 		CAPTURE_STA_TIM2CH[0] = 0;
 	} 
 	if(CAPTURE_STA_TIM2CH[1]&0x80) {								//成功捕获到了一次上升沿											//溢出时间总和
-		myControl.remoteControl[1] = CAPTURE_VAL_TIM2CH[1];							//得到总的高电平时间
+		if(CAPTURE_VAL_TIM2CH[1] < 3000 && CAPTURE_VAL_TIM2CH[1]!=0)
+			myControl.remoteControl[1] = CAPTURE_VAL_TIM2CH[1];							//得到总的高电平时间
 //		printf("TIM2 CH2:%d\t", temp[1]);
 		CAPTURE_STA_TIM2CH[1] = 0;
 	} 
 	if(CAPTURE_STA_TIM2CH[2]&0x80) {								//成功捕获到了一次上升沿										//溢出时间总和
-		myControl.remoteControl[2] = CAPTURE_VAL_TIM2CH[2];							//得到总的高电平时间
+		if(CAPTURE_VAL_TIM2CH[2] < 3000 && CAPTURE_VAL_TIM2CH[2]!=0)
+			myControl.remoteControl[2] = CAPTURE_VAL_TIM2CH[2];							//得到总的高电平时间
 //		printf("TIM2 CH3:%d\t", temp[2]);
 		CAPTURE_STA_TIM2CH[2] = 0;
 	} 
 	if(CAPTURE_STA_TIM2CH[3]&0x80) {								//成功捕获到了一次上升沿											//溢出时间总和
-		myControl.remoteControl[3] = CAPTURE_VAL_TIM2CH[3];							//得到总的高电平时间
+		if(CAPTURE_VAL_TIM2CH[3] < 3000 && CAPTURE_VAL_TIM2CH[3]!=0)
+			myControl.remoteControl[3] = CAPTURE_VAL_TIM2CH[3];							//得到总的高电平时间
 //		printf("TIM2 CH4:%d\t", temp[3]);
 		CAPTURE_STA_TIM2CH[3] = 0;
 	}
