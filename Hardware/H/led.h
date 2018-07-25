@@ -3,8 +3,11 @@
 
 #include "stm32f10x.h"
 
-#define  LED1_On()  	GPIO_SetBits(GPIOA, GPIO_Pin_0)
-#define  LED1_Off()   	GPIO_ResetBits(GPIOA, GPIO_Pin_0)
+#define  PB0_On()  		GPIO_SetBits(GPIOB, GPIO_Pin_0)
+#define  PB0_Off()   	GPIO_ResetBits(GPIOB, GPIO_Pin_0)
+
+#define  PB1_On()  		GPIO_SetBits(GPIOB, GPIO_Pin_1)
+#define  PB1_Off()   	GPIO_ResetBits(GPIOB, GPIO_Pin_1)
 
 void LED_Config(void);
 
