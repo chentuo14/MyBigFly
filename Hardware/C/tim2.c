@@ -1,6 +1,7 @@
 
 #include "tim2.h"
 #include "usart.h"
+#include "led.h"
 
 //arr:自动重装值 psc:时钟预分频数
 //定时器溢出时间计算：Tout=((arr+1)*(psc+1))/Ft   us
@@ -81,7 +82,9 @@ u8 CAPTURE_STA_TIM2CH[4] = {0};
 u16 CAPTURE_VAL_TIM2CH[4];
 u16 CAPTURE_UP_TIM2CH[4], CAPTURE_DOWN_TIM2CH[4];
 void TIM2_IRQHandler(void)
-{	
+{
+PB1_On();
+	
 //	if(TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET) {
 //		if((CAPTURE_STA_TIM2CH[1]&0x80) == 0) {			//还未捕获成功
 //			if(CAPTURE_STA_TIM2CH[1]&0x40) {			//已经捕获到高电平了
@@ -203,5 +206,6 @@ void TIM2_IRQHandler(void)
 //		printf("TIM2 CH4:%d\t", temp[3]);
 		CAPTURE_STA_TIM2CH[3] = 0;
 	}
+PB1_Off();
 }
 

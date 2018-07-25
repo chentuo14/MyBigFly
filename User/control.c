@@ -70,7 +70,7 @@ void SetDefaultPID(void)
 	myPID.yaw_i = 0;
 	myPID.yaw_d = 0;
 	
-	myPID.x_p = -1.5;
+	myPID.x_p = -4.0;
 	myPID.x_i = 0;
 	myPID.x_d = 0;
 	
@@ -156,8 +156,8 @@ void Outter_PID(void)
 void Inner_PID(void)
 {
 	//计算X轴和Y轴角速度偏差
-	e_X[0] = angular_speed_X - myControl.gyro_X;
-	e_Y[0] = angular_speed_Y - myControl.gyro_Y;
+	e_X[0] = angular_speed_X - myControl.gyro_X*GYRO_XISHU;
+	e_Y[0] = angular_speed_Y - myControl.gyro_Y*GYRO_XISHU;
 	
 	//===========================绕X轴内环PID运算============================================
 	//积分分离，以便在偏差较大的时候可以快速的缩减偏差，在偏差较小的时候，才加入积分，消除误差
@@ -176,7 +176,9 @@ void Inner_PID(void)
 	
 	//位置式PID运算
 	PWM_X = (s16)(myPID.x_p*e_X[0] + flag_X*myPID.x_i*e_I_X + myPID.x_d*(e_X[0]-e_X[1]));
-//printf("PWM_X%d, \n", PWM_X);
+#if DEBUG_PRINT
+printf("PWM_X%d", PWM_X);
+#endif
 	//===========================绕Y轴内环PID运算========================================
 	//积分分离，以便在偏差较大的时候可以快速的缩减偏差，在偏差较小的时候，才加入积分，消除误差
 	if(e_Y[0]>=150.0||e_Y[0]<=-150.0){

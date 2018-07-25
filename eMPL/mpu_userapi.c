@@ -24,7 +24,7 @@ volatile uint32_t hal_timestamp = 0;
 #define NO_MOTION       (1)
 
 /* Starting sampling rate. */
-#define DEFAULT_MPU_HZ  (100)
+#define DEFAULT_MPU_HZ  (200)
 
 #define FLASH_SIZE      (512)
 #define FLASH_MEM_START ((void*)0x1800)
@@ -1333,8 +1333,8 @@ u8 mpu_mpl_get_data(float *pitch,float *roll, float *yaw, vs16 *gyro_x, vs16 *gy
     *pitch = -(data[1]/q16);
     *yaw   = -data[2] / q16;
 #endif
-	*gyro_x = gyro[1];
-	*gyro_y = gyro[0];
+	*gyro_x = gyro[0];
+	*gyro_y = gyro[1];
 	
 	_tempData.a_x = accel_short[0];
 	_tempData.a_y = accel_short[1];

@@ -49,7 +49,7 @@ int main(void)
 	SetSysClockToHSE();
 	cycleCounterInit();
 	SysTick_Config(SystemCoreClock / 1000);
-//	LED_Config();	
+	LED_Config();	
 	USART_Config();
 	DMA1_CHANNEL2_Config();
 	IIC_Init();
@@ -77,7 +77,20 @@ int main(void)
 #if SEND_TO_ANO
 		My_ANO_DT_Send_STATUS_SENSER_RCDATA_MOTO(&myControl, &mySenserData);
 #endif
-		Delay(1);
+		if(!myControl.unlocked) {			//加锁状态
+			Motor_Set(MOTOR_MIDVALUE, MOTOR_MIDVALUE, MOTOR_MIDVALUE, MOTOR_MIDVALUE);						
+		} else if(myControl.unlocked) {		//解锁状态
+#if CONTROL_ON
+			attitude_control();
+#else			
+			PCA9685_SetPWM(0, 0, myControl.remoteControl[2]/5);
+			PCA9685_SetPWM(1, 0, myControl.remoteControl[2]/5);
+			PCA9685_SetPWM(2, 0, myControl.remoteControl[2]/5);
+			PCA9685_SetPWM(3, 0, myControl.remoteControl[2]/5);
+#endif
+		}
+		
+		delay_ms(25);
 	}
 }
 

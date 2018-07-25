@@ -4,6 +4,7 @@
 #include "mpu_userapi.h"
 #include "pca9685.h"
 #include "control.h"
+#include "led.h"
 
 void DMP_EXTIConfig(void)
 {
@@ -31,6 +32,7 @@ void DMP_EXTIConfig(void)
 
 void EXTI9_5_IRQHandler(void)
 {
+PB0_On();
 	int ret = 0;
 	if(EXTI_GetITStatus(EXTI_Line5)) {
 		ret = mpu_mpl_get_data(&myControl.pitch, &myControl.roll, &myControl.yaw, &myControl.gyro_X, &myControl.gyro_Y);
@@ -46,19 +48,7 @@ void EXTI9_5_IRQHandler(void)
 #endif
 		}
 		
-		if(!myControl.unlocked) {			//加锁状态
-			Motor_Set(MOTOR_MIDVALUE, MOTOR_MIDVALUE, MOTOR_MIDVALUE, MOTOR_MIDVALUE);						
-		} else if(myControl.unlocked) {		//解锁状态
-#if CONTROL_ON
-			attitude_control();
-#else			
-			PCA9685_SetPWM(0, 0, myControl.remoteControl[2]/5);
-			PCA9685_SetPWM(1, 0, myControl.remoteControl[2]/5);
-			PCA9685_SetPWM(2, 0, myControl.remoteControl[2]/5);
-			PCA9685_SetPWM(3, 0, myControl.remoteControl[2]/5);
-#endif
-		}
-		
 		EXTI_ClearITPendingBit(EXTI_Line5);
 	}
+PB0_Off();
 }
