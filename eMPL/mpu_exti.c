@@ -10,6 +10,8 @@ void DMP_EXTIConfig(void)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
 	EXTI_InitTypeDef EXTI_InitStructure;
+	NVIC_InitTypeDef NVIC_InitStruct;
+
 	/* GPIOB Periph clock enable */
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
 	
@@ -26,18 +28,31 @@ void DMP_EXTIConfig(void)
 	EXTI_Init(&EXTI_InitStructure);
 	
 	GPIO_EXTILineConfig(GPIO_PortSourceGPIOA, GPIO_PinSource5);
- 	NVIC_SetPriority(EXTI9_5_IRQn, NVIC_EncodePriority(NVIC_PriorityGroup_0, 0, 1)); 
-	NVIC_EnableIRQ(EXTI9_5_IRQn);	
+ 	NVIC_SetPriority(EXTI9_5_IRQn, NVIC_EncodePriority(NVIC_PriorityGroup_0, 0, 7)); 
+	NVIC_EnableIRQ(EXTI9_5_IRQn);
 }
 
 void EXTI9_5_IRQHandler(void)
 {
-PB0_On();
+
 	int ret = 0;
 	if(EXTI_GetITStatus(EXTI_Line5)) {
+		PB0_On();
 		ret = mpu_mpl_get_data(&myControl.pitch, &myControl.roll, &myControl.yaw, &myControl.gyro_X, &myControl.gyro_Y);
+		PB0_Off();
 		if(!ret) {		//这里是成功吧对吧？
-			;
+			if(!myControl.unlocked) {			//加锁状态
+				Motor_Set(MOTOR_MIDVALUE, MOTOR_MIDVALUE, MOTOR_MIDVALUE, MOTOR_MIDVALUE);						
+			} else if(myControl.unlocked) {		//解锁状态
+#if CONTROL_ON
+				attitude_control();
+#else			
+				PCA9685_SetPWM(0, 0, myControl.remoteControl[2]/5);
+				PCA9685_SetPWM(1, 0, myControl.remoteControl[2]/5);
+				PCA9685_SetPWM(2, 0, myControl.remoteControl[2]/5);
+				PCA9685_SetPWM(3, 0, myControl.remoteControl[2]/5);
+#endif
+			}
 		} else if(ret == -1) {
 #if DEBUG_PRINT
 			printf("-1\n");
@@ -50,5 +65,4 @@ PB0_On();
 		
 		EXTI_ClearITPendingBit(EXTI_Line5);
 	}
-PB0_Off();
 }

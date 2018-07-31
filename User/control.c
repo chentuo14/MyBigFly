@@ -70,7 +70,7 @@ void SetDefaultPID(void)
 	myPID.yaw_i = 0;
 	myPID.yaw_d = 0;
 	
-	myPID.x_p = -4.0;
+	myPID.x_p = -2.9;
 	myPID.x_i = 0;
 	myPID.x_d = 0;
 	
@@ -80,7 +80,7 @@ void SetDefaultPID(void)
 	
 	myPID.z_p = 0;
 	myPID.z_i = 0;
-	myPID.z_d = 0;
+	myPID.z_d = 0;  
 }
 
 /**************************实现函数********************************************

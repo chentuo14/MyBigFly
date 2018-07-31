@@ -8,7 +8,7 @@ u8 Uart_Send_Buffer[100] = {0};
 
 /**************************实现函数********************************************
 *函数原型:		void U1NVIC_Configuration(void)
-*功    能:		串口1中断配置
+*功    能:		串口3中断配置
 *输入参数：		无
 *输出参数：		无
 *******************************************************************************/
@@ -187,7 +187,7 @@ void DMA1_CHANNEL2_Config(void)
     //TXE发送中断,TC传输完成中断,RXNE接收中断,PE奇偶错误中断,可以是多个   
     USART_ITConfig(USART3,USART_IT_RXNE,ENABLE);  
      
-    //配置UART1中断--------------------------------------------------  
+    //配置UART3中断--------------------------------------------------  
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_0);
     NVIC_InitStructure.NVIC_IRQChannel = USART3_IRQn;               //通道设置为串口1中断  
     NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;       //中断占先等级0  
@@ -226,7 +226,7 @@ void DMA1_Channel2_IRQHandler(void)
 void WIFI_UDP_INIT(void)
 {
 	u8 *send1 = (u8 *)WIFI_CWMODE;
-//	u8 *send2 = (u8 *)WIFI_CONN;
+	u8 *send2 = (u8 *)WIFI_CONN;
 	u8 *send3 = (u8 *)WIFI_UDP;
 	u8 *send4 = (u8 *)WIFI_CIPMODE;
 	u8 *send5 = (u8 *)WIFI_SEND;

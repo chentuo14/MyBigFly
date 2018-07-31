@@ -46,6 +46,7 @@ void old_code(void);
   */
 int main(void)
 {
+	u8 i=0;
 	SetSysClockToHSE();
 	cycleCounterInit();
 	SysTick_Config(SystemCoreClock / 1000);
@@ -70,27 +71,35 @@ int main(void)
 	TIM2_CAP_Init(0xffff, 72-1);		//TIM2 1Mhz计数
 	TIM4_CAP_Init(0xffff, 72-1);		//TIM4 1Mhz计数
 	/* Infinite loop */
-	WIFI_UDP_INIT();
+//	WIFI_UDP_INIT();
 	DMP_EXTIConfig();
 
 	while(1) {
+		if(i%10==0) {
 #if SEND_TO_ANO
 		My_ANO_DT_Send_STATUS_SENSER_RCDATA_MOTO(&myControl, &mySenserData);
 #endif
-		if(!myControl.unlocked) {			//加锁状态
-			Motor_Set(MOTOR_MIDVALUE, MOTOR_MIDVALUE, MOTOR_MIDVALUE, MOTOR_MIDVALUE);						
-		} else if(myControl.unlocked) {		//解锁状态
-#if CONTROL_ON
-			attitude_control();
-#else			
-			PCA9685_SetPWM(0, 0, myControl.remoteControl[2]/5);
-			PCA9685_SetPWM(1, 0, myControl.remoteControl[2]/5);
-			PCA9685_SetPWM(2, 0, myControl.remoteControl[2]/5);
-			PCA9685_SetPWM(3, 0, myControl.remoteControl[2]/5);
-#endif
+			i=1;
+		} else {
+			i++;
 		}
 		
-		delay_ms(25);
+//		if(!myControl.unlocked) {			//加锁状态
+//			Motor_Set(MOTOR_MIDVALUE, MOTOR_MIDVALUE, MOTOR_MIDVALUE, MOTOR_MIDVALUE);						
+//		} else if(myControl.unlocked) {		//解锁状态
+//PB1_On();
+//#if CONTROL_ON
+//			attitude_control();
+//#else			
+//			PCA9685_SetPWM(0, 0, myControl.remoteControl[2]/5);
+//			PCA9685_SetPWM(1, 0, myControl.remoteControl[2]/5);
+//			PCA9685_SetPWM(2, 0, myControl.remoteControl[2]/5);
+//			PCA9685_SetPWM(3, 0, myControl.remoteControl[2]/5);
+//#endif
+//		}
+//PB1_Off();
+		
+		Delay(1);
 	}
 }
 
