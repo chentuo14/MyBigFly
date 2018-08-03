@@ -11,6 +11,164 @@
 dt_flag_t f;			//需要发送数据的标志
 u8 data_to_send[50];	//发送数据缓存
 u8 send_all[100];
+u8 myDMA_Busy = 0;
+static void ANO_DT_Send_Check(u8 head, u8 check_sum)
+{
+	data_to_send[0]=0xAA;
+	data_to_send[1]=0xAA;
+	data_to_send[2]=0xEF;
+	data_to_send[3]=2;
+	data_to_send[4]=head;
+	data_to_send[5]=check_sum;
+	
+	
+	u8 sum = 0;
+	for(u8 i=0;i<6;i++)
+		sum += data_to_send[i];
+	data_to_send[6]=sum;
+
+	DMA1_Channel2_Send(data_to_send, 7);
+}
+/////////////////////////////////////////////////////////////////////////////////////
+//Data_Receive_Prepare函数是协议预解析，根据协议的格式，将收到的数据进行一次格式性解析，格式正确的话再进行数据解析
+//移植时，此函数应由用户根据自身使用的通信方式自行调用，比如串口每收到一字节数据，则调用此函数一次
+//此函数解析出符合格式的数据帧后，会自行调用数据解析函数
+void ANO_DT_Data_Receive_Prepare(u8 data)
+{
+	static u8 RxBuffer[50];
+	static u8 _data_len = 0,_data_cnt = 0;
+	static u8 state = 0;
+	
+	if(state==0&&data==0xAA)
+	{
+		state=1;
+		RxBuffer[0]=data;
+	}
+	else if(state==1&&data==0xAF)
+	{
+		state=2;
+		RxBuffer[1]=data;
+	}
+	else if(state==2&&data<0XF1)
+	{
+		state=3;
+		RxBuffer[2]=data;
+	}
+	else if(state==3&&data<50)
+	{
+		state = 4;
+		RxBuffer[3]=data;
+		_data_len = data;
+		_data_cnt = 0;
+	}
+	else if(state==4&&_data_len>0)
+	{
+		_data_len--;
+		RxBuffer[4+_data_cnt++]=data;
+		if(_data_len==0)
+			state = 5;
+	}
+	else if(state==5)
+	{
+		state = 0;
+		RxBuffer[4+_data_cnt]=data;
+		myDMA_Busy = 1;
+		ANO_DT_Data_Receive_Anl(RxBuffer,_data_cnt+5);
+		myDMA_Busy = 0;
+	}
+	else
+		state = 0;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+//Data_Receive_Anl函数是协议数据解析函数，函数参数是符合协议格式的一个数据帧，该函数会首先对协议数据进行校验
+//校验通过后对数据进行解析，实现相应功能
+//此函数可以不用用户自行调用，由函数Data_Receive_Prepare自动调用
+void ANO_DT_Data_Receive_Anl(u8 *data_buf,u8 num)
+{
+	u8 sum = 0;
+	for(u8 i=0;i<(num-1);i++)
+		sum += *(data_buf+i);
+	if(!(sum==*(data_buf+num-1)))		return;		//判断sum
+	if(!(*(data_buf)==0xAA && *(data_buf+1)==0xAF))		return;		//判断帧头
+	
+	if(*(data_buf+2)==0X01)
+	{
+//		if(*(data_buf+4)==0X01)
+//			mpu6050.Acc_CALIBRATE = 1;
+//		if(*(data_buf+4)==0X02)
+//			mpu6050.Gyro_CALIBRATE = 1;
+//		if(*(data_buf+4)==0X03)
+//		{
+//			mpu6050.Acc_CALIBRATE = 1;		
+//			mpu6050.Gyro_CALIBRATE = 1;			
+//		}
+	}
+	
+	if(*(data_buf+2)==0X02)
+	{
+		if(*(data_buf+4)==0X01)
+		{
+			f.send_pid1 = 1;
+			f.send_pid2 = 1;
+		}
+		if(*(data_buf+4)==0X02)
+		{
+			;
+		}
+		if(*(data_buf+4)==0XA0)		//读取版本信息
+		{
+			f.send_version = 1;
+		}
+		if(*(data_buf+4)==0XA1)		//恢复默认参数
+		{
+//			Para_ResetToFactorySetup();
+		}
+	}
+
+	if(*(data_buf+2)==0X10)								//PID1
+    {
+        myPID.rol_p  	= 0.001*( (vs16)(*(data_buf+4)<<8)|*(data_buf+5) );
+        myPID.rol_i  	= 0.001*( (vs16)(*(data_buf+6)<<8)|*(data_buf+7) );
+        myPID.rol_d  	= 0.001*( (vs16)(*(data_buf+8)<<8)|*(data_buf+9) );
+        myPID.pit_p 	= 0.001*( (vs16)(*(data_buf+10)<<8)|*(data_buf+11) );
+        myPID.pit_i 	= 0.001*( (vs16)(*(data_buf+12)<<8)|*(data_buf+13) );
+        myPID.pit_d 	= 0.001*( (vs16)(*(data_buf+14)<<8)|*(data_buf+15) );
+        myPID.yaw_p 	= 0.001*( (vs16)(*(data_buf+16)<<8)|*(data_buf+17) );
+        myPID.yaw_i 	= 0.001*( (vs16)(*(data_buf+18)<<8)|*(data_buf+19) );
+        myPID.yaw_d 	= 0.001*( (vs16)(*(data_buf+20)<<8)|*(data_buf+21) );
+        ANO_DT_Send_Check(*(data_buf+2),sum);
+    }
+    if(*(data_buf+2)==0X11)								//PID2
+    {
+     	myPID.x_p	= -0.001*( (vs16)(*(data_buf+4)<<8)|*(data_buf+5) );
+     	myPID.x_i	= -0.001*( (vs16)(*(data_buf+6)<<8)|*(data_buf+7) );
+     	myPID.x_d	= -0.001*( (vs16)(*(data_buf+8)<<8)|*(data_buf+9) );
+		myPID.y_p 	= 0.001*( (vs16)(*(data_buf+14)<<8)|*(data_buf+11) );
+		myPID.y_i   = 0.001*( (vs16)(*(data_buf+16)<<8)|*(data_buf+13) );
+		myPID.y_d   = 0.001*( (vs16)(*(data_buf+18)<<8)|*(data_buf+15) );
+        myPID.z_p 	= 0.001*( (vs16)(*(data_buf+16)<<8)|*(data_buf+17) );
+        myPID.z_i 	= 0.001*( (vs16)(*(data_buf+18)<<8)|*(data_buf+19) );
+        myPID.z_d 	= 0.001*( (vs16)(*(data_buf+20)<<8)|*(data_buf+21) );
+        ANO_DT_Send_Check(*(data_buf+2),sum);
+    }
+    if(*(data_buf+2)==0X12)								//PID3
+    {	
+		ANO_DT_Send_Check(*(data_buf+2),sum);
+    }
+	if(*(data_buf+2)==0X13)								//PID4
+	{
+		ANO_DT_Send_Check(*(data_buf+2),sum);
+	}
+	if(*(data_buf+2)==0X14)								//PID5
+	{
+		ANO_DT_Send_Check(*(data_buf+2),sum);
+	}
+	if(*(data_buf+2)==0X15)								//PID6
+	{
+		ANO_DT_Send_Check(*(data_buf+2),sum);
+	}
+}
 
 /**************************实现函数********************************************
 *函数原型:		void ANO_DT_Send_Status(float angle_rol, float angle_pit, float angle_yaw, s32 alt, u8 fly_model, u8 armed)
@@ -316,6 +474,7 @@ void ANO_DT_Send_PID(u8 group,float p1_p,float p1_i,float p1_d,float p2_p,float 
 	data_to_send[_cnt++] = sum;
 	
 	serial3_send_buff(data_to_send, _cnt);
+//	DMA1_Channel2_Send(data_to_send, _cnt);
 }
 
 void My_ANO_DT_Send_STATUS_SENSER_RCDATA_MOTO(struct MY_CONTROL *send_Control, struct Senser_Data *send_sensor)

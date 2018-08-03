@@ -1,6 +1,7 @@
 #include "wifi.h"
 #include "sysclock.h"
 #include "usart.h"
+#include "ANO_DataTransfer.h"
 
 //串口接收DMA缓存
 u8 Uart_Send_Buffer[100] = {0};
@@ -108,8 +109,7 @@ void USART3_IRQHandler(void)
 	if(USART_GetITStatus(USART3, USART_IT_RXNE) != RESET)     //接收中断
 	{
 		char ch = USART_ReceiveData(USART3);
-//		fPutChar(ch);
-//		serial3_send_char(ch);
+		ANO_DT_Data_Receive_Prepare(ch);
 		USART_ClearITPendingBit(USART3, USART_IT_RXNE);       //这样写只能接收一个字节
 	}	
 }

@@ -71,13 +71,26 @@ int main(void)
 	TIM2_CAP_Init(0xffff, 72-1);		//TIM2 1Mhz计数
 	TIM4_CAP_Init(0xffff, 72-1);		//TIM4 1Mhz计数
 	/* Infinite loop */
-//	WIFI_UDP_INIT();
+	WIFI_UDP_INIT();
 	DMP_EXTIConfig();
-
+	
 	while(1) {
 		if(i%10==0) {
 #if SEND_TO_ANO
-		My_ANO_DT_Send_STATUS_SENSER_RCDATA_MOTO(&myControl, &mySenserData);
+			if(f.send_pid1 == 1) {
+				f.send_pid1 = 0;
+				ANO_DT_Send_PID(1, myPID.rol_p, myPID.rol_i, myPID.rol_d,
+					myPID.pit_p, myPID.pit_i, myPID.pit_d,
+					myPID.yaw_p, myPID.yaw_i, myPID.yaw_d);
+			} else if(f.send_pid2 == 1) {
+				f.send_pid2 = 0;
+				ANO_DT_Send_PID(2, (-1)*myPID.x_p, (-1)*myPID.x_i, (-1)*myPID.x_d,
+					myPID.y_p, myPID.y_i, myPID.y_d,
+					myPID.z_p, myPID.z_i, myPID.z_d);
+			} else {	
+				if(myDMA_Busy == 0)
+					My_ANO_DT_Send_STATUS_SENSER_RCDATA_MOTO(&myControl, &mySenserData);
+			}
 #endif
 			i=1;
 		} else {

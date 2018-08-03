@@ -31,6 +31,7 @@ typedef struct
 }dt_flag_t;
 
 extern dt_flag_t f;
+extern u8 myDMA_Busy;
 
 void ANO_DT_Data_Exchange(void);
 void ANO_DT_Data_Receive_Prepare(u8 data);

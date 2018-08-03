@@ -70,9 +70,9 @@ void SetDefaultPID(void)
 	myPID.yaw_i = 0;
 	myPID.yaw_d = 0;
 	
-	myPID.x_p = -2.9;
-	myPID.x_i = 0;
-	myPID.x_d = 0;
+	myPID.x_p = -9.5;
+	myPID.x_i = -0.0;
+	myPID.x_d = -0.0;
 	
 	myPID.y_p = 0;
 	myPID.y_i = 0;
